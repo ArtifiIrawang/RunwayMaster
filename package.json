@@ -1,0 +1,14 @@
+{
+  "name": "runwaymaster-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "serve 主页 -l 4173",
+    "build": "rm -rf dist && mkdir -p dist && cp -R 主页 dist && echo \"Static files copied to dist/\"",
+    "preview": "serve dist -l 4174"
+  },
+  "devDependencies": {
+    "serve": "^14.2.3"
+  }
+}
+
