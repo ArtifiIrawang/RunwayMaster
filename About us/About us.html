@@ -231,7 +231,7 @@
     <!-- 全屏视频 -->
     <section class="fullscreen-video">
       <video autoplay muted loop playsinline>
-        <source src="../Home/zongzhuang.mp4" type="video/mp4" />
+        <source src="/Home/zongzhuang.mp4" type="video/mp4" />
       </video>
     </section>
 
@@ -531,9 +531,18 @@
           
           try {
             // 提交表单
-            const response = await fetch('https://formsubmit.co/el/gofilo', {
+            const formDataObj = {};
+            formData.forEach((value, key) => {
+              formDataObj[key] = value;
+            });
+            
+            const response = await fetch('https://formsubmit.co/ajax/el/gofilo', {
               method: 'POST',
-              body: formData
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(formDataObj)
             });
 
             if (response.ok) {
