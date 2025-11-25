@@ -1,0 +1,122 @@
+<!-- 顶部固定导航 -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-black border-b border-white/10">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="relative flex items-center justify-between h-16 md:h-20">
+      <!-- 左侧：移动端菜单按钮 + LOGO -->
+      <div class="flex items-center gap-3">
+        <button
+          id="mobile-nav-open"
+          type="button"
+          class="md:hidden inline-flex items-center justify-center p-2 rounded-full border border-white/20 text-white hover:border-orange-400 hover:text-orange-300 transition"
+          aria-label="打开导航"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+
+        <div class="flex items-center">
+          <a href="index.html" class="nav-logo-link">
+            <img src="logo.svg" alt="RunwayMaster Factory Logo" class="h-8 w-auto nav-logo-img">
+          </a>
+        </div>
+      </div>
+
+      <!-- 中间 Tabs：居中 -->
+      <nav class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 md:gap-10 text-[11px] md:text-xs tracking-[0.18em] uppercase">
+        <a href="#customized" class="nav-link-customized hover:text-orange-400 transition">
+          <span data-i18n-key="nav.customized">CUSTOMIZED</span>
+        </a>
+        <a href="#case-center" class="nav-link-case-center hover:text-orange-400 transition">
+          <span data-i18n-key="nav.caseCenter">CASE CENTER</span>
+        </a>
+        <a href="../Downloads/downloads.html" class="nav-link-downloads hover:text-orange-400 transition">
+          <span data-i18n-key="nav.downloads">DOWNLOADS</span>
+        </a>
+        <a href="About us.html" class="nav-link-company hover:text-orange-400 transition">
+          <span data-i18n-key="nav.company">ABOUT US</span>
+        </a>
+      </nav>
+
+      <!-- 右侧：语言切换 + RFQ -->
+      <div class="flex items-center gap-3 flex-1 justify-end">
+        <!-- 语言切换按钮 -->
+        <div class="flex items-center gap-1">
+          <button type="button" class="lang-toggle-btn active" data-lang-btn="zh">中</button>
+          <button type="button" class="lang-toggle-btn" data-lang-btn="en">EN</button>
+        </div>
+
+        <!-- RFQ 按钮 -->
+        <a
+          href="#contact"
+          class="nav-link-contact px-4 md:px-5 py-2 rounded-full bg-orange-500 border border-white text-[11px] md:text-xs font-semibold uppercase tracking-[0.18em] text-white hover:bg-orange-400 transition"
+        >
+          <span data-i18n-key="nav.rfq">RFQ</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- 移动端左侧抽屉导航 -->
+<div
+  id="mobile-nav-backdrop"
+  class="fixed inset-0 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
+></div>
+<aside
+  id="mobile-nav"
+  class="fixed inset-y-0 left-0 z-50 w-72 max-w-[80vw] bg-black border-r border-white/10 px-6 py-6 transform -translate-x-full transition-transform duration-300 md:hidden"
+  aria-hidden="true"
+>
+  <div class="flex items-center justify-between mb-8">
+    <a href="index.html" class="nav-logo-link">
+      <img src="logo.svg" alt="RunwayMaster Factory Logo" class="h-7 w-auto nav-logo-img">
+    </a>
+    <button
+      id="mobile-nav-close"
+      type="button"
+      class="inline-flex items-center justify-center p-2 rounded-full border border-white/20 text-white hover:border-orange-400 hover:text-orange-300 transition"
+      aria-label="关闭导航"
+    >
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M6 18L18 6" />
+      </svg>
+    </button>
+  </div>
+
+  <nav class="flex flex-col gap-5 text-xs uppercase tracking-[0.16em]">
+    <a href="#customized" class="nav-link-customized hover:text-orange-400 transition" data-mobile-nav-link data-i18n-key="nav.customized">CUSTOMIZED</a>
+    <a href="#case-center" class="nav-link-case-center hover:text-orange-400 transition" data-mobile-nav-link data-i18n-key="nav.caseCenter">CASE CENTER</a>
+    <a href="#downloads" class="nav-link-downloads hover:text-orange-400 transition" data-mobile-nav-link data-i18n-key="nav.downloads">DOWNLOADS</a>
+    <a href="About us.html" class="nav-link-company hover:text-orange-400 transition" data-mobile-nav-link data-i18n-key="nav.company">ABOUT US</a>
+    <a href="#contact" class="nav-link-contact hover:text-orange-400 transition" data-mobile-nav-link data-i18n-key="nav.contact">CONTACT</a>
+  </nav>
+
+  <div class="mt-8 flex items-center gap-2">
+    <button type="button" class="lang-toggle-btn active" data-lang-btn="zh">中</button>
+    <button type="button" class="lang-toggle-btn" data-lang-btn="en">EN</button>
+  </div>
+
+  <a
+    href="#contact"
+    class="nav-link-contact mt-6 inline-flex items-center justify-center px-5 py-2 rounded-full bg-orange-500 border border-white text-[11px] font-semibold uppercase tracking-[0.18em] text-white hover:bg-orange-400 transition"
+  >
+    <span data-i18n-key="nav.rfq">RFQ</span>
+  </a>
+</aside>
+
+<!-- 底部导航 -->
+<footer class="border-t border-zinc-800 bg-black/90 mt-auto">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-[11px] md:text-xs text-zinc-500">
+    <nav class="flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-6">
+      <a href="#customized" class="nav-link-customized hover:text-orange-300 transition" data-i18n-key="footer.nav.customized"></a>
+      <a href="#downloads" class="nav-link-downloads hover:text-orange-300 transition" data-i18n-key="footer.nav.download"></a>
+      <a href="About us.html" class="nav-link-company hover:text-orange-300 transition" data-i18n-key="footer.nav.company"></a>
+      <a href="#contact" class="nav-link-contact hover:text-orange-300 transition" data-i18n-key="footer.nav.contact"></a>
+    </nav>
+    <p class="text-zinc-600 text-center md:text-right w-full md:w-auto">
+      © <span id="year"></span> RunwayMaster. <span data-i18n-key="footer.rights"></span>
+    </p>
+  </div>
+</footer>
+

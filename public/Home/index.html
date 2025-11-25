@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>RunwayMaster · 无人机工厂推广站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="RunwayMaster 无人机工厂与自动化飞行解决方案，支持定制化生产与多行业应用。">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .lang-toggle-btn {
+      border-radius: 999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #a1a1aa;
+    }
+    .lang-toggle-btn.active {
+      border-color: #f97316;
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.15);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-black text-white flex flex-col">
+  <!-- 导航占位符 -->
+  <div id="nav-container"></div>
+
+  <script>
+    // 加载导航组件
+    fetch('../Nav/partials/nav.html')
+      .then(response => response.text())
+      .then(html => {
+        // 创建临时容器来解析 HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        
+        // 提取 header 和移动端导航
+        const header = tempDiv.querySelector('header');
+        const mobileNavBackdrop = tempDiv.querySelector('#mobile-nav-backdrop');
+        const mobileNav = tempDiv.querySelector('#mobile-nav');
+        
+        // 将 header 和移动端导航添加到 nav-container
+        const navContainer = document.getElementById('nav-container');
+        if (header) navContainer.appendChild(header);
+        if (mobileNavBackdrop) navContainer.appendChild(mobileNavBackdrop);
+        if (mobileNav) navContainer.appendChild(mobileNav);
+        
+        // 提取 footer 并添加到页面底部
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+        if (footerPlaceholder) {
+          const footer = tempDiv.querySelector('footer');
+          if (footer) {
+            // 克隆 footer 以避免重复引用问题
+            const footerClone = footer.cloneNode(true);
+            footerPlaceholder.replaceWith(footerClone);
+          }
+        }
+        
+        // 根据当前页面调整导航链接路径
+        const currentPath = window.location.pathname;
+        const isHomePage = currentPath.includes('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Home/');
+        
+        // 更新 logo 和链接路径
+        const logoLinks = document.querySelectorAll('.nav-logo-link');
+        const logoImgs = document.querySelectorAll('.nav-logo-img');
+        logoLinks.forEach(link => {
+          link.href = isHomePage ? 'index.html' : '../Home/index.html';
+        });
+        logoImgs.forEach(img => {
+          img.src = isHomePage ? 'logo.svg' : '../Home/logo.svg';
+        });
+        
+        // 更新导航链接
+        if (isHomePage) {
+          // 首页：锚点链接保持原样，About us 和 Downloads 链接需要完整路径
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+          document.querySelectorAll('.nav-link-downloads').forEach(link => {
+            link.href = '../Downloads/downloads.html';
+          });
+        } else {
+          // 其他页面：所有链接都指向首页的锚点
+          document.querySelectorAll('.nav-link-customized').forEach(link => {
+            link.href = '../Home/index.html#customized';
+          });
+          document.querySelectorAll('.nav-link-case-center').forEach(link => {
+            link.href = '../Case center/case center.html';
+          });
+          // Downloads 链接需要根据当前页面判断
+          const isDownloadsPage = currentPath.includes('downloads.html');
+          document.querySelectorAll('.nav-link-downloads').forEach(link => {
+            link.href = isDownloadsPage ? 'downloads.html' : '../Downloads/downloads.html';
+          });
+          document.querySelectorAll('.nav-link-contact').forEach(link => {
+            link.href = '../Home/index.html#contact';
+          });
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+        }
+        
+        // 更新底部导航链接
+        if (isHomePage) {
+          document.querySelectorAll('footer .nav-link-customized').forEach(link => {
+            link.href = '#customized';
+          });
+          document.querySelectorAll('footer .nav-link-downloads').forEach(link => {
+            link.href = '../Downloads/downloads.html';
+          });
+          document.querySelectorAll('footer .nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+          document.querySelectorAll('footer .nav-link-contact').forEach(link => {
+            link.href = '#contact';
+          });
+        } else {
+          document.querySelectorAll('footer .nav-link-customized').forEach(link => {
+            link.href = '../Home/index.html#customized';
+          });
+          const isDownloadsPage = currentPath.includes('downloads.html');
+          document.querySelectorAll('footer .nav-link-downloads').forEach(link => {
+            link.href = isDownloadsPage ? 'downloads.html' : '../Downloads/downloads.html';
+          });
+          document.querySelectorAll('footer .nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+          document.querySelectorAll('footer .nav-link-contact').forEach(link => {
+            link.href = '../Home/index.html#contact';
+          });
+        }
+        
+        // 初始化移动端导航功能
+        initMobileNav();
+        
+        // 初始化年份
+        const yearEl = document.getElementById('year');
+        if (yearEl) {
+          yearEl.textContent = new Date().getFullYear();
+        }
+        
+        // 绑定导航中的语言切换按钮
+        bindLangButtons();
+      })
+      .catch(error => {
+        console.error('加载导航失败:', error);
+      });
+    
+    function bindLangButtons() {
+      // 使用事件委托，这样即使导航是动态加载的也能工作
+      document.addEventListener("click", function(e) {
+        const btn = e.target.closest("[data-lang-btn]");
+        if (btn) {
+          e.preventDefault();
+          const lang = btn.getAttribute("data-lang-btn");
+          setLanguage(lang);
+        }
+      });
+    }
+    
+    function initMobileNav() {
+      const mobileNav = document.getElementById("mobile-nav");
+      const mobileBackdrop = document.getElementById("mobile-nav-backdrop");
+      const mobileOpenBtn = document.getElementById("mobile-nav-open");
+      const mobileCloseBtn = document.getElementById("mobile-nav-close");
+      const mobileNavLinks = mobileNav ? mobileNav.querySelectorAll("[data-mobile-nav-link]") : [];
+
+      function setMobileNav(open) {
+        if (!mobileNav || !mobileBackdrop) return;
+        mobileNav.classList.toggle("-translate-x-full", !open);
+        mobileNav.setAttribute("aria-hidden", (!open).toString());
+        mobileBackdrop.classList.toggle("opacity-100", open);
+        mobileBackdrop.classList.toggle("pointer-events-auto", open);
+      }
+
+      [mobileOpenBtn, mobileCloseBtn].forEach(btn => {
+        if (!btn) return;
+        btn.addEventListener("click", () => setMobileNav(btn === mobileOpenBtn));
+      });
+
+      if (mobileBackdrop) {
+        mobileBackdrop.addEventListener("click", () => setMobileNav(false));
+      }
+
+      mobileNavLinks.forEach(link => {
+        link.addEventListener("click", () => setMobileNav(false));
+      });
+
+      const mq = window.matchMedia("(min-width: 768px)");
+      if (mq && mq.addEventListener) {
+        mq.addEventListener("change", e => {
+          if (e.matches) setMobileNav(false);
+        });
+      }
+    }
+  </script>
+
+
+  <!-- 主体内容：避免被导航挡住 -->
+  <main class="pt-20 md:pt-24">
+
+    <!-- Banner：贯穿式 + 右侧视频模块 -->
+    <section class="mb-12">
+      <div class="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-black">
+        <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-10 md:py-14">
+          <div class="grid md:grid-cols-2 gap-8 md:gap-10 items-center">
+            <!-- 左侧文案 -->
+            <section>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-700 text-[10px] md:text-xs text-zinc-200">
+                <span class="h-1.5 w-1.5 rounded-full bg-orange-400 animate-pulse"></span>
+                <span data-i18n-key="banner.badge"></span>
+              </div>
+
+              <h1 class="mt-5 text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight leading-tight">
+                <span data-i18n-key="banner.line1"></span>
+                <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-300 bg-clip-text text-transparent">
+                  <span data-i18n-key="banner.highlight"></span>
+                </span>
+                <span data-i18n-key="banner.line2"></span>
+              </h1>
+
+              <p class="mt-4 md:mt-5 text-xs md:text-sm text-zinc-300 leading-relaxed" data-i18n-key="banner.desc"></p>
+
+              <div class="mt-6 flex flex-wrap items-center gap-3 md:gap-4">
+                <button class="px-6 md:px-7 py-3 md:py-3.5 rounded-full bg-orange-500 text-black text-xs md:text-sm font-semibold shadow-lg shadow-orange-500/40 hover:bg-orange-400 transition active:scale-[0.98]">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0 4-4m-4 4-4-4M5 20h14" />
+                    </svg>
+                    <span data-i18n-key="banner.btn.primary"></span>
+                  </span>
+                </button>
+                <button class="px-5 md:px-6 py-3 rounded-full border border-zinc-700 bg-zinc-900 text-xs md:text-sm text-zinc-200 hover:border-orange-400 hover:text-orange-200 transition">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0 4-4m-4 4-4-4M5 20h14" />
+                    </svg>
+                    <span data-i18n-key="banner.btn.secondary"></span>
+                  </span>
+                </button>
+              </div>
+
+              <!-- 三个指标 -->
+              <div class="mt-7 md:mt-8 grid grid-cols-3 gap-3 md:gap-4 text-[10px] md:text-xs">
+                <div class="rounded-2xl border border-zinc-800 bg-zinc-950 p-3 md:p-4">
+                  <p class="text-zinc-400 mb-1" data-i18n-key="stats.capacity.label"></p>
+                  <p class="text-lg md:text-xl font-semibold text-orange-300">
+                    10K<span class="text-sm md:text-base text-zinc-400 ml-0.5">+</span>
+                  </p>
+                </div>
+                <div class="rounded-2xl border border-zinc-800 bg-zinc-950 p-3 md:p-4">
+                  <p class="text-zinc-400 mb-1" data-i18n-key="stats.projects.label"></p>
+                  <p class="text-lg md:text-xl font-semibold text-amber-300">
+                    120<span class="text-sm md:text-base text-zinc-400 ml-0.5">+</span>
+                  </p>
+                </div>
+                <div class="rounded-2xl border border-zinc-800 bg-zinc-950 p-3 md:p-4">
+                  <p class="text-zinc-400 mb-1" data-i18n-key="stats.testing.label"></p>
+                  <p class="text-lg md:text-xl font-semibold text-yellow-300">
+                    95<span class="text-sm md:text-base text-zinc-400 ml-0.5">%</span>
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- 右侧：工厂视频模块（GIF 占位） -->
+            <section class="md:pl-4 lg:pl-6">
+              <div class="rounded-3xl border border-zinc-800 bg-zinc-950 p-4 md:p-5 lg:p-6 space-y-4">
+                <div class="flex items-center justify-between text-[10px] md:text-xs text-zinc-300">
+                  <div class="flex items-center gap-2">
+                    <span class="uppercase tracking-[0.2em] text-zinc-400" data-i18n-key="factory.live.title"></span>
+                  </div>
+                </div>
+
+                <div class="relative w-full overflow-hidden rounded-2xl border border-zinc-800 bg-black aspect-video">
+                  <!-- VIDEO SLOT #1: 替换 src 为你的工厂主线 MP4，如 factory-main.mp4 -->
+                  <video
+                    class="h-full w-full object-cover"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    poster="factory-main.jpg"
+                  >
+                    <source src="zongzhuang.mp4" type="video/mp4" />
+                    <!-- fallback：当浏览器不支持 video 时，可保留一张 GIF 或 JPG 封面 -->
+                  </video>
+                </div>
+
+                <div class="flex justify-between items-center text-[10px] md:text-xs text-zinc-400">
+                  <span data-i18n-key="factory.live.captionLeft"></span>
+                  <span data-i18n-key="factory.live.captionRight"></span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CUSTOMIZATION：6 大定制化 -->
+    <section id="customized" class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 mb-12 md:mb-16">
+      <div class="mb-6 md:mb-8 text-center">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-orange-300 mb-2" data-i18n-key="cust.section.title"></p>
+        <h2 class="text-lg md:text-2xl font-semibold tracking-tight" data-i18n-key="cust.section.heading"></h2>
+        <p class="mt-2 text-xs md:text-sm text-zinc-400 max-w-2xl mx-auto" data-i18n-key="cust.section.desc"></p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4 md:gap-5 text-xs md:text-sm">
+        <article class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 md:p-5">
+          <h3 class="text-sm md:text-base font-semibold mb-2 text-orange-300" data-i18n-key="cust.1.title"></h3>
+          <p class="text-zinc-300" data-i18n-key="cust.1.desc"></p>
+        </article>
+
+        <article class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 md:p-5">
+          <h3 class="text-sm md:text-base font-semibold mb-2 text-orange-300" data-i18n-key="cust.2.title"></h3>
+          <p class="text-zinc-300" data-i18n-key="cust.2.desc"></p>
+        </article>
+
+        <article class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 md:p-5">
+          <h3 class="text-sm md:text-base font-semibold mb-2 text-orange-300" data-i18n-key="cust.3.title"></h3>
+          <p class="text-zinc-300" data-i18n-key="cust.3.desc"></p>
+        </article>
+
+        <article class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 md:p-5">
+          <h3 class="text-sm md:text-base font-semibold mb-2 text-orange-300" data-i18n-key="cust.4.title"></h3>
+          <p class="text-zinc-300" data-i18n-key="cust.4.desc"></p>
+        </article>
+
+        <article class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 md:p-5">
+          <h3 class="text-sm md:text-base font-semibold mb-2 text-orange-300" data-i18n-key="cust.5.title"></h3>
+          <p class="text-zinc-300" data-i18n-key="cust.5.desc"></p>
+        </article>
+
+        <article class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 md:p-5">
+          <h3 class="text-sm md:text-base font-semibold mb-2 text-orange-300" data-i18n-key="cust.6.title"></h3>
+          <p class="text-zinc-300" data-i18n-key="cust.6.desc"></p>
+        </article>
+      </div>
+    </section>
+
+    <!-- FACTORY VIDEOS -->
+    <section id="downloads" class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 mb-12 md:mb-16">
+      <div class="mb-6 md:mb-8 text-center">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-orange-300 mb-2" data-i18n-key="videos.section.title"></p>
+        <h2 class="text-lg md:text-2xl font-semibold tracking-tight" data-i18n-key="videos.section.heading"></h2>
+        <p class="mt-2 text-xs md:text-sm text-zinc-400 max-w-2xl mx-auto" data-i18n-key="videos.section.desc"></p>
+      </div>
+
+      <div class="space-y-6 md:space-y-8">
+        <article class="rounded-3xl border border-zinc-800 bg-zinc-950 overflow-hidden">
+          <div class="aspect-video bg-black">
+            <!-- VIDEO SLOT #2: 装配线视频 MP4（示例 factory-assembly.mp4） -->
+            <video class="w-full h-full object-cover" autoplay muted loop playsinline poster="factory-assembly.jpg">
+              <source src="zongzhuang.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="px-4 md:px-6 py-3 md:py-4 text-center text-xs md:text-sm">
+            <h3 class="font-semibold mb-1" data-i18n-key="videos.1.title"></h3>
+            <p class="text-zinc-400" data-i18n-key="videos.1.desc"></p>
+            <p class="mt-1 text-zinc-500 text-[11px]" data-i18n-key="videos.1.note"></p>
+          </div>
+        </article>
+
+        <article class="rounded-3xl border border-zinc-800 bg-zinc-950 overflow-hidden">
+          <div class="aspect-video bg-black">
+            <!-- VIDEO SLOT #3: 自动化测试视频 MP4（示例 factory-testing.mp4） -->
+            <video class="w-full h-full object-cover" autoplay muted loop playsinline poster="factory-testing.jpg">
+              <source src="shengchanxian.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="px-4 md:px-6 py-3 md:py-4 text-center text-xs md:text-sm">
+            <h3 class="font-semibold mb-1" data-i18n-key="videos.2.title"></h3>
+            <p class="text-zinc-400" data-i18n-key="videos.2.desc"></p>
+            <p class="mt-1 text-zinc-500 text-[11px]" data-i18n-key="videos.2.note"></p>
+          </div>
+        </article>
+
+        <article class="rounded-3xl border border-zinc-800 bg-zinc-950 overflow-hidden">
+          <div class="aspect-video bg-black">
+            <!-- VIDEO SLOT #4: 户外试飞视频 MP4（示例 factory-flight.mp4） -->
+            <video class="w-full h-full object-cover" autoplay muted loop playsinline poster="factory-flight.jpg">
+              <source src="zongzhuang.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="px-4 md:px-6 py-3 md:py-4 text-center text-xs md:text-sm">
+            <h3 class="font-semibold mb-1" data-i18n-key="videos.3.title"></h3>
+            <p class="text-zinc-400" data-i18n-key="videos.3.desc"></p>
+            <p class="mt-1 text-zinc-500 text-[11px]" data-i18n-key="videos.3.note"></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CASE CENTER -->
+    <section id="case-center" class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 mb-12 md:mb-16">
+      <div class="mb-6 md:mb-8 text-center">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-orange-300 mb-2" data-i18n-key="cases.section.title"></p>
+        <h2 class="text-lg md:text-2xl font-semibold tracking-tight" data-i18n-key="cases.section.heading"></h2>
+        <p class="mt-2 text-xs md:text-sm text-zinc-400 max-w-2xl mx-auto" data-i18n-key="cases.section.desc"></p>
+      </div>
+
+      <div class="space-y-5 md:space-y-6">
+        <!-- 机型 1 -->
+        <article class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 md:p-5 grid md:grid-cols-[1.2fr,1.8fr] gap-4 md:gap-6 items-center">
+          <div class="aspect-video rounded-xl overflow-hidden bg-black border border-zinc-800">
+            <!-- TODO: drone-a.jpg -->
+            <img src="daotong.png" alt="RM-X4 Inspection Drone" class="w-full h-full object-cover">
+          </div>
+          <div class="text-xs md:text-sm">
+            <h3 class="text-sm md:text-base font-semibold mb-1" data-i18n-key="cases.1.title"></h3>
+            <p class="text-zinc-300 mb-2" data-i18n-key="cases.1.desc"></p>
+            <ul class="text-zinc-400 space-y-1 mb-3">
+              <li data-i18n-key="cases.1.b1"></li>
+              <li data-i18n-key="cases.1.b2"></li>
+              <li data-i18n-key="cases.1.b3"></li>
+            </ul>
+            <a
+              href="#"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-zinc-700 bg-zinc-900 text-xs text-zinc-200 hover:border-orange-400 hover:text-orange-200 transition"
+            >
+              <span data-i18n-key="cases.viewDetails">查看详情</span>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 机型 2 -->
+        <article class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 md:p-5 grid md:grid-cols-[1.2fr,1.8fr] gap-4 md:gap-6 items-center">
+          <div class="aspect-video rounded-xl overflow-hidden bg-black border border-zinc-800">
+            <!-- TODO: drone-b.jpg -->
+            <img src="amav 15.png" alt="RM-H6 Security Drone" class="w-full h-full object-cover">
+          </div>
+          <div class="text-xs md:text-sm">
+            <h3 class="text-sm md:text-base font-semibold mb-1" data-i18n-key="cases.2.title"></h3>
+            <p class="text-zinc-300 mb-2" data-i18n-key="cases.2.desc"></p>
+            <ul class="text-zinc-400 space-y-1 mb-3">
+              <li data-i18n-key="cases.2.b1"></li>
+              <li data-i18n-key="cases.2.b2"></li>
+              <li data-i18n-key="cases.2.b3"></li>
+              <li data-i18n-key="cases.2.b4"></li>
+            </ul>
+            <a
+              href="../Downloads/downloads/amav15.html"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-zinc-700 bg-zinc-900 text-xs text-zinc-200 hover:border-orange-400 hover:text-orange-200 transition"
+            >
+              <span data-i18n-key="cases.viewDetails">查看详情</span>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 机型 3 -->
+        <article class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 md:p-5 grid md:grid-cols-[1.2fr,1.8fr] gap-4 md:gap-6 items-center">
+          <div class="aspect-video rounded-xl overflow-hidden bg-black border border-zinc-800">
+            <!-- TODO: drone-c.jpg -->
+            <img src="fanwurenji.png" alt="RM-VTOL Hybrid Drone" class="w-full h-full object-cover">
+          </div>
+          <div class="text-xs md:text-sm">
+            <h3 class="text-sm md:text-base font-semibold mb-1" data-i18n-key="cases.3.title"></h3>
+            <p class="text-zinc-300 mb-2" data-i18n-key="cases.3.desc"></p>
+            <ul class="text-zinc-400 space-y-1 mb-3">
+              <li data-i18n-key="cases.3.b1"></li>
+              <li data-i18n-key="cases.3.b2"></li>
+              <li data-i18n-key="cases.3.b3"></li>
+            </ul>
+            <a
+              href="#"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-zinc-700 bg-zinc-900 text-xs text-zinc-200 hover:border-orange-400 hover:text-orange-200 transition"
+            >
+              <span data-i18n-key="cases.viewDetails">查看详情</span>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- COMPANY -->
+    <section id="company" class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 mb-12 md:mb-16">
+      <div class="rounded-3xl border border-zinc-800 bg-zinc-950 p-5 md:p-7">
+        <div class="text-center mb-6 md:mb-8 space-y-3">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-orange-300 mb-2" data-i18n-key="company.section.title"></p>
+          <h2 class="text-lg md:text-2xl font-semibold tracking-tight mb-2" data-i18n-key="company.section.heading"></h2>
+          <div class="text-xs md:text-sm text-zinc-300 max-w-3xl mx-auto space-y-3">
+            <p data-i18n-key="company.section.desc"></p>
+            <p data-i18n-key="company.p1"></p>
+            <p class="text-zinc-400" data-i18n-key="company.p2"></p>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4 text-xs md:text-sm text-zinc-300">
+            <article class="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-950 to-black p-4 shadow-inner shadow-black/30 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <div class="h-10 w-10 rounded-2xl border border-orange-500/40 bg-orange-500/10 flex items-center justify-center text-orange-300">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <rect x="4" y="6" width="16" height="12" rx="2" />
+                    <path d="M4 10h16" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-[11px] uppercase tracking-[0.16em] text-zinc-500" data-i18n-key="company.metric.area"></p>
+                  <p class="text-lg md:text-xl font-semibold text-white">10,000 m²</p>
+                </div>
+              </div>
+              <div class="mt-4 h-2.5 rounded-full bg-zinc-900">
+                <div class="h-full rounded-full bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-300" style="width: 95%;"></div>
+              </div>
+              <p class="mt-2 text-[11px] text-zinc-500" data-i18n-key="company.metric.area.note"></p>
+            </article>
+
+            <article class="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-950 to-black p-4 shadow-inner shadow-black/30 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <div class="h-10 w-10 rounded-2xl border border-sky-500/40 bg-sky-500/10 flex items-center justify-center text-sky-300">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M5 4h14v4H5zM5 10h14v4H5zM5 16h14v4H5z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-[11px] uppercase tracking-[0.16em] text-zinc-500" data-i18n-key="company.metric.stations"></p>
+                  <p class="text-lg md:text-xl font-semibold text-white">50+ Nodes</p>
+                </div>
+              </div>
+              <div class="mt-4 h-2.5 rounded-full bg-zinc-900">
+                <div class="h-full rounded-full bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300" style="width: 78%;"></div>
+              </div>
+              <p class="mt-2 text-[11px] text-zinc-500" data-i18n-key="company.metric.stations.note"></p>
+            </article>
+
+            <article class="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-950 to-black p-4 shadow-inner shadow-black/30 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <div class="h-10 w-10 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 flex items-center justify-center text-emerald-300">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" />
+                    <path d="M6 20v-1a6 6 0 0112 0v1" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-[11px] uppercase tracking-[0.16em] text-zinc-500" data-i18n-key="company.metric.team"></p>
+                  <p class="text-lg md:text-xl font-semibold text-white">40+ Engineers</p>
+                </div>
+              </div>
+              <div class="mt-4 h-2.5 rounded-full bg-zinc-900">
+                <div class="h-full rounded-full bg-gradient-to-r from-emerald-400 via-lime-300 to-yellow-200" style="width: 65%;"></div>
+              </div>
+              <p class="mt-2 text-[11px] text-zinc-500" data-i18n-key="company.metric.team.note"></p>
+            </article>
+
+            <article class="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-950 to-black p-4 shadow-inner shadow-black/30 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <div class="h-10 w-10 rounded-2xl border border-purple-500/40 bg-purple-500/10 flex items-center justify-center text-purple-300">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M4 7h16M4 12h16M4 17h16" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-[11px] uppercase tracking-[0.16em] text-zinc-500" data-i18n-key="company.metric.industry"></p>
+                  <p class="text-lg md:text-xl font-semibold text-white">
+                    <span data-i18n-key="company.metric.industry.value"></span>
+                  </p>
+                </div>
+              </div>
+              <div class="mt-4 flex flex-wrap justify-center gap-2 text-[11px]">
+                <span class="px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-200" data-i18n-key="company.metric.industry.value"></span>
+              </div>
+              <p class="mt-2 text-[11px] text-zinc-500" data-i18n-key="company.metric.industry.note"></p>
+            </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact / RFQ -->
+    <section id="contact" class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 mb-12 md:mb-16">
+      <div class="rounded-3xl border border-zinc-800 bg-gradient-to-r from-zinc-950 via-zinc-950 to-zinc-900 p-6 md:p-8 text-center">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-orange-300 mb-2" data-i18n-key="contact.section.title"></p>
+        <h2 class="text-lg md:text-xl font-semibold tracking-tight mb-3" data-i18n-key="contact.section.heading"></h2>
+
+        <p class="text-xs md:text-sm text-zinc-300 mb-2">
+          <span data-i18n-key="contact.label"></span>
+          <!-- TODO: 改成你的真实邮箱 -->
+          <a href="mailto:linxiaofenghe@gmail.com" class="text-orange-300 hover:text-orange-200 underline underline-offset-4">
+            linxiaofenghe@gmail.com
+          </a>
+        </p>
+
+        <form
+        id="contact-form"
+        action="https://formsubmit.co/el/gofilo"
+        method="POST"
+        class="mt-4 max-w-md mx-auto flex flex-col sm:flex-row items-center gap-3"
+      >
+        <!-- 发到你邮箱的邮件标题，方便你区分来源 -->
+        <input type="hidden" name="_subject" value="RunwayMaster 官网首页邮箱订阅" />
+        <!-- 关闭默认验证码（不想要验证码就留着这一行） -->
+        <input type="hidden" name="_captcha" value="false" />
+        <!-- 防止页面跳转，使用 AJAX 提交 -->
+        <input type="hidden" name="_next" value="" />
+      
+        <input
+          type="email"
+          id="contact-email"
+          name="email"
+          required
+          placeholder="Email"
+          class="w-full flex-1 rounded-full border border-zinc-700 bg-black/60 px-4 py-2.5 text-xs md:text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-orange-400 disabled:opacity-50 disabled:cursor-not-allowed"
+        />
+      
+        <button
+          type="submit"
+          id="contact-submit-btn"
+          class="w-full sm:w-auto px-6 py-2.5 rounded-full bg-orange-500 text-black text-xs md:text-sm font-semibold hover:bg-orange-400 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-orange-500"
+        >
+          <span id="contact-submit-text" data-i18n-key="contact.submit">提交</span>
+        </button>
+      </form>
+
+        <p class="mt-3 text-[11px] text-zinc-500" data-i18n-key="contact.hint"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 底部导航占位符 -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    // 移动端导航折叠控制已移至导航加载脚本中
+
+    // 表单提交状态管理
+    document.addEventListener('DOMContentLoaded', () => {
+      const contactForm = document.getElementById('contact-form');
+      const contactEmail = document.getElementById('contact-email');
+      const contactSubmitBtn = document.getElementById('contact-submit-btn');
+      const contactSubmitText = document.getElementById('contact-submit-text');
+      
+      // 检查是否已提交（使用 sessionStorage，刷新后恢复）
+      const formSubmitted = sessionStorage.getItem('contact-form-submitted');
+      if (formSubmitted === 'true') {
+        if (contactEmail) contactEmail.disabled = true;
+        if (contactSubmitBtn) {
+          contactSubmitBtn.disabled = true;
+          if (contactSubmitText) {
+            const currentLang = document.documentElement.lang || 'zh';
+            contactSubmitText.textContent = currentLang === 'zh' ? '已提交' : 'Submitted';
+          }
+        }
+      }
+
+      if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          // 如果已提交，不处理
+          if (contactSubmitBtn && contactSubmitBtn.disabled) {
+            return;
+          }
+
+          const formData = new FormData(contactForm);
+          
+          try {
+            // 提交表单
+            const response = await fetch('https://formsubmit.co/el/gofilo', {
+              method: 'POST',
+              body: formData
+            });
+
+            if (response.ok) {
+              // 标记为已提交
+              sessionStorage.setItem('contact-form-submitted', 'true');
+              
+              // 禁用输入和按钮
+              if (contactEmail) contactEmail.disabled = true;
+              if (contactSubmitBtn) {
+                contactSubmitBtn.disabled = true;
+                const currentLang = document.documentElement.lang || 'zh';
+                if (contactSubmitText) {
+                  contactSubmitText.textContent = currentLang === 'zh' ? '已提交' : 'Submitted';
+                }
+              }
+            }
+          } catch (error) {
+            console.error('表单提交失败:', error);
+            alert('提交失败，请稍后重试');
+          }
+        });
+      }
+    });
+
+    // 多语言字典：将来需要更多语言，在这里加一个新对象即可（例如 jp: { ... }）
+    const translations = {
+      zh: {
+        "page.title": "RunwayMaster · 无人机工厂推广站",
+
+        "nav.customized": "定制化",
+        "nav.caseCenter": "案例中心",
+        "nav.downloads": "下载中心",
+        "nav.company": "关于我们",
+        "nav.contact": "联系我们",
+        "nav.rfq": "联系我们",
+        
+        "about.title": "Runway Master",
+        "about.desc": "Runway Master (Thailand) 提供端到端无人机解决方案——整机出口和 OEM/ODM 开发。我们为影视、巡检、测绘、农业和 FPV 构建多旋翼和固定翼/VTOL 平台。能力包括高清视频链路、RTK/PPK、避障和编队飞行。凭借内部工厂和资深工程师，我们运行从原型到批量生产的闭环流程，提供 24/7 项目跟踪、技术文档、远程/现场支持以及全球合规和海关协助。",
+        "about.advantages.title": "核心优势",
+        "about.advantages.1": "• 全栈：即发即用 + OEM/ODM + 组件采购",
+        "about.advantages.2": "• 多场景覆盖（影视、农业、测绘、FPV）",
+        "about.advantages.3": "• 里程碑交付：原型 → 试点 → 批量",
+        "about.advantages.4": "• 联合调优：飞控/视频/载荷/地面站",
+        "about.advantages.5": "• 全球服务：24/7 跟进、培训、售后",
+        "about.factory.title": "全球工厂",
+        "about.factory.desc": "全球 100 家工厂支撑我们的供应链，欢迎您与我们合作！",
+        "about.factory.head.title": "总部工厂",
+        "about.factory.head.email": "邮箱：",
+        "about.partners.title": "合作伙伴",
+        "about.partners.desc": "Runway Master 正在全球各地区寻找无人机经销商。我们专注于出口用于航拍、农业、FPV 和配件的无人机，提供完整的无人机供应和 OEM/ODM 定制。我们提供高利润率、价格保证、原型、培训支持、营销材料和 24/7 技术支持。我们期待与渠道合作伙伴合作，扩大市场并实现共同增长。",
+        "about.partners.contact": "联系方式：",
+        "form.submit": "提交",
+
+        "banner.badge": "RunwayMaster · 无人机工厂 · 智能飞行平台",
+        "banner.line1": "面向下一代",
+        "banner.highlight": "无人机制造",
+        "banner.line2": "与自动化飞行",
+        "banner.desc": "从结构设计、电子系统到整机测试和飞行控制，RunwayMaster 为安防、巡检、应急等行业提供一体化的无人机定制与工厂级交付能力。",
+        "banner.btn.primary": "无人机工厂",
+        "banner.btn.secondary": "产品手册",
+
+        "stats.capacity.label": "年产能（整机）",
+        "stats.projects.label": "定制项目交付",
+        "stats.testing.label": "自动化测试覆盖",
+
+        "factory.live.title": "Factory View",
+        "factory.live.badge": "",
+        "factory.live.captionLeft": "工厂总装线 · 实时画面",
+        "factory.live.captionRight": "",
+
+        "cust.section.title": "Customization",
+        "cust.section.heading": "六大定制化板块 · 支撑无人机全生命周期",
+        "cust.section.desc": "从结构设计到云端系统集成，我们提供完整的定制能力，支持 OEM / ODM / 联合研发等合作模式。",
+        "cust.1.title": "01 · 结构与外观定制",
+        "cust.1.desc": "支持不同轴距、机臂折叠方案、材质与涂装定制，满足品牌化与特定任务需求。",
+        "cust.2.title": "02 · 载荷与传感器集成",
+        "cust.2.desc": "相机、云台、激光雷达、多光谱等多类型载荷兼容，提供挂载设计与线束定制。",
+        "cust.3.title": "03 · 飞控与通信系统",
+        "cust.3.desc": "可选多品牌飞控与数传链路，支持加密通信、远程指令、集群控制等高级能力。",
+        "cust.4.title": "04 · 电源与续航方案",
+        "cust.4.desc": "定制电池组、快换电池仓与充换电方案，兼顾重量、续航与安全性。",
+        "cust.5.title": "05 · 生产测试与认证",
+        "cust.5.desc": "提供从来料检测、功能测试到整机飞行测试的自动化测试流程，支持多地区认证对接。",
+        "cust.6.title": "06 · 云平台与运维系统",
+        "cust.6.desc": "与现有平台对接或提供云平台，支持机队管理、任务调度、数据回传与远程运维。",
+
+        "videos.section.title": "Factory Videos",
+        "videos.section.heading": "工厂实拍 · 三大核心环节展示",
+        "videos.section.desc": "通过工厂 GIF / 视频素材，让客户与合作伙伴直观看到我们的真实产线能力。",
+        "videos.1.title": "总装产线 · 多工位协同装配",
+        "videos.1.desc": "展示从机臂、机身到载荷安装的完整装配节奏，支持 OEM/ODM 项目联合规划。",
+        "videos.2.title": "自动化测试 · 老化 & 飞控校准",
+        "videos.2.desc": "覆盖电气测试、信号检测、姿态校准等多个环节，保证整机出厂一致性。",
+        "videos.2.note": "支持嵌入线上说明书 / 方案介绍",
+        "videos.3.title": "户外试飞场地 · 批量飞行验证",
+        "videos.3.desc": "展示批量试飞与任务模拟过程，让客户看到真正接近实战应用的飞行状态。",
+        "videos.3.note": "可衔接到机队管理平台演示",
+
+        "cases.section.title": "Hot case",
+        "cases.section.heading": "近期交付的代表机型",
+        "cases.section.desc": "展示我们为不同行业客户交付的几款无人机机型，支持按场景进行深度定制。",
+        "cases.viewDetails": "查看详情",
+        "cases.1.title": "EVO Max 旗舰级行业多旋翼无人机平台",
+        "cases.1.desc": "A-Mesh 自组网 · Autel Autonomy 自主飞行",
+        "cases.1.b1": "· 全天候全向避障 · 高精度视觉导航",
+        "cases.1.b2": "· 8K 10×光学变焦 + 超星光级夜视相机",
+        "cases.1.b3": "· 42 分钟续航 · 15 公里图传 · 覆盖安防巡检与应急救援",
+        "cases.2.title": "Amav 15",
+        "cases.2.desc": "15 寸重载 FPV 穿越平台 · 最高时速 130km/h",
+        "cases.2.b1": "· 7kg 额定载荷 · 8kg 最大载荷",
+        "cases.2.b2": "· 5.8G 48CH 3W 图传 · 最远约 20km",
+        "cases.2.b3": "· 空载续航约 42 分钟 · 额载续航约 12 分钟",
+        "cases.2.b4": "· 647mm 轴距碳纤机架 · 兼容 ELRS915M 与 GPS 模块",
+        "cases.3.title": "RM-VT · 垂直起降复合翼",
+        "cases.3.desc": "面向应急与测绘场景的长航时平台，兼顾大范围覆盖与低速悬停能力。",
+        "cases.3.b1": "· 航程 120km+，支持多种载荷方案",
+        "cases.3.b2": "· 垂直起降，无需专业跑道",
+        "cases.3.b3": "· 可与地面指挥车 / 移动站联动部署",
+
+        "company.section.title": "Company",
+        "company.section.heading": "关于 RunwayMaster 无人机工厂",
+        "company.section.desc": "RunwayMaster 专注于工业级无人机的设计、制造与系统集成，具备从结构设计、电子研发到整机测试与机队管理平台的完整能力。",
+        "company.p1": "我们与多家行业头部企业和系统集成商合作，提供 OEM / ODM 定制化服务，支持多地区认证和本地化交付，为合作伙伴打造可规模复制的无人机产品线。",
+        "company.p2": "工厂布局覆盖装配、测试、仓储与试飞场地，既能支持小批量快速迭代，也能承载大规模稳定生产。",
+        "company.metric.area": "工厂面积",
+        "company.metric.area.note": "覆盖装配、测试、仓储与试飞区，实现整线一体化流动。",
+        "company.metric.stations": "生产/测试工位",
+        "company.metric.stations.note": "50+ 节点串联自动装配、标定与老化测试。",
+        "company.metric.team": "研发 & 工程团队",
+        "company.metric.team.note": "结构、电控、软件一体的资深工程师队伍。",
+        "company.metric.industry": "服务行业",
+        "company.metric.industry.value": "电力 / 安防 / 应急 / 测绘",
+        "company.metric.industry.note": "面向多行业提供 OEM / ODM 与运维方案。",
+
+        "contact.section.title": "Contact & RFQ",
+        "contact.section.heading": "留下你的邮箱，我们与您对接无人机工厂方案",
+        "contact.label": "商务合作邮箱：",
+        "contact.hint": "* 提交后我们会通过邮箱与您联系，可进一步沟通代理、定制开发或项目合作。",
+        "contact.submit": "提交",
+
+        "footer.nav.customized": "Customized",
+        "footer.nav.download": "Download",
+        "footer.nav.company": "Company",
+        "footer.nav.contact": "Contact",
+        "footer.rights": "保留所有权利。"
+      },
+
+      en: {
+        "page.title": "RunwayMaster · UAV Factory Solutions",
+
+        "nav.customized": "CUSTOMIZED",
+        "nav.caseCenter": "CASE CENTER",
+        "nav.downloads": "DOWNLOADS",
+        "nav.company": "ABOUT US",
+        "nav.contact": "CONTACT",
+        "nav.rfq": "RFQ",
+        
+        "about.title": "Runway Master",
+        "about.desc": "Runway Master (Thailand) delivers end-to-end UAV solutions—turnkey exports and OEM/ODM development. We build multirotor and fixed-wing/VTOL platforms for film, inspection, mapping, agriculture, and FPV. Capabilities include HD video links, RTK/PPK, obstacle avoidance, and formation flight. With an in-house factory and senior engineers, we run a closed-loop process from prototyping to mass production, backed by 24/7 project tracking, technical docs, remote/on-site support, and global compliance & customs assistance.",
+        "about.advantages.title": "Key Advantages",
+        "about.advantages.1": "• Full-stack: ready-to-ship + OEM/ODM + component sourcing",
+        "about.advantages.2": "• Multi-scenario coverage (cinema, agri, survey, FPV)",
+        "about.advantages.3": "• Milestone delivery: prototype → pilot → volume",
+        "about.advantages.4": "• Joint tuning: flight control/video/payload/GCS",
+        "about.advantages.5": "• Global service: 24/7 follow-up, training, after-sales",
+        "about.factory.title": "GLOBAL FACTORY",
+        "about.factory.desc": "With 100 factories worldwide backing our supply chain, we welcome you to partner with us!",
+        "about.factory.head.title": "Head Factory",
+        "about.factory.head.email": "Email:",
+        "about.partners.title": "PARTNERS",
+        "about.partners.desc": "Runway Master is seeking drone distributors in all regions. We specialize in exporting drones for aerial photography, agriculture, FPV, and accessories, offering complete drone supply and OEM/ODM customization. We offer high profit margins, price guarantees, prototypes, training support, marketing materials, and 24/7 technical support. We look forward to collaborating with our channel partners to expand the market and achieve shared growth.",
+        "about.partners.contact": "Contact:",
+        "form.submit": "SUBMIT",
+
+        "banner.badge": "RunwayMaster · UAV Factory · Intelligent Flight Platform",
+        "banner.line1": "A haute-couture factory for drones.",
+        "banner.highlight": "Customize your",
+        "banner.line2": "Dream Drone...",
+        "banner.desc": "From structural design and electronics to full-vehicle testing and flight control, RunwayMaster delivers end-to-end UAV customization and factory-grade delivery for security, inspection and emergency scenarios.",
+        "banner.btn.primary": "UAV Factory",
+        "banner.btn.secondary": "Product Brochure",
+
+        "stats.capacity.label": "Annual Capacity (Units)",
+        "stats.projects.label": "Delivered Custom Projects",
+        "stats.testing.label": "Automated Test Coverage",
+
+        "factory.live.title": "Factory View",
+        "factory.live.badge": "",
+        "factory.live.captionLeft": "Main assembly line · Live feed",
+        "factory.live.captionRight": "",
+
+        "cust.section.title": "Customization",
+        "cust.section.heading": "Six Customization Pillars · Covering the Full UAV Lifecycle",
+        "cust.section.desc": "From structure to cloud integration, we provide complete customization capabilities, supporting OEM / ODM / co-development collaboration models.",
+        "cust.1.title": "01 · Structure & Industrial Design",
+        "cust.1.desc": "Support different wheelbases, folding arms, materials and finishes to match branding and mission requirements.",
+        "cust.2.title": "02 · Payload & Sensor Integration",
+        "cust.2.desc": "Compatible with cameras, gimbals, LiDAR, multispectral sensors and more, with custom mounts and harness design.",
+        "cust.3.title": "03 · Flight Control & Communication",
+        "cust.3.desc": "Multiple flight controllers and datalinks available, with encrypted comms, remote commands and swarm control.",
+        "cust.4.title": "04 · Power & Endurance Solutions",
+        "cust.4.desc": "Custom battery packs, quick-swap bays and charging / swapping solutions for optimal weight, endurance and safety.",
+        "cust.5.title": "05 · Production Test & Certification",
+        "cust.5.desc": "Automated testing from incoming inspection to functional and flight tests, with support for multi-region certification.",
+        "cust.6.title": "06 · Cloud Platform & Operations",
+        "cust.6.desc": "Integrate with existing platforms or use our cloud for fleet management, mission scheduling, data streaming and remote O&M.",
+
+        "videos.section.title": "Factory Videos",
+        "videos.section.heading": "Factory Footage · Three Key Stages",
+        "videos.section.desc": "Show real production capabilities to clients and partners through GIFs and video footage from the factory floor.",
+        "videos.1.title": "Final Assembly · Multi-Station Workflow",
+        "videos.1.desc": "Shows full assembly from arms and fuselage to payload installation, ideal for OEM / ODM planning.",
+        "videos.2.title": "Automated Testing · Burn-in & FC Calibration",
+        "videos.2.desc": "Covers electrical tests, signal checks and attitude calibration to ensure consistent quality at shipment.",
+        "videos.2.note": "Can be embedded into online docs or solution pages",
+        "videos.3.title": "Outdoor Flight Range · Batch Flight Validation",
+        "videos.3.desc": "Shows batch test flights and mission simulations, highlighting real-world conditions.",
+        "videos.3.note": "Can be linked to fleet management platform demos",
+
+        "cases.section.title": "Hot case",
+        "cases.section.heading": "Recently Delivered Representative Models",
+        "cases.section.desc": "Showcases several UAV models delivered to clients in different industries, all deeply customizable by scenario.",
+        "cases.viewDetails": "View Details",
+        "cases.1.title": "EVO Max · Flagship Multirotor Platform",
+        "cases.1.desc": "A-Mesh ad-hoc networking · Autel Autonomy intelligent flight",
+        "cases.1.b1": "· All-weather omnidirectional obstacle avoidance with precision visual navigation",
+        "cases.1.b2": "· 8K 10× optical zoom plus ultra-starlight night-vision payload",
+        "cases.1.b3": "· 42-min endurance · 15 km link · Built for security patrols and emergency response",
+        "cases.2.title": "Amav 15",
+        "cases.2.desc": "15-inch heavy-lift FPV platform · Top speed 130 km/h",
+        "cases.2.b1": "· Rated payload 7 kg · Max payload 8 kg",
+        "cases.2.b2": "· 5.8G 48CH 3W video link · Up to ~20 km range",
+        "cases.2.b3": "· 42-min endurance empty · ~12 min with payload",
+        "cases.2.b4": "· 647 mm carbon fiber frame · ELRS915M & GPS compatible",
+        "cases.3.title": "RM-VT · VTOL Hybrid Wing",
+        "cases.3.desc": "A long-endurance platform for emergency response and mapping, balancing wide-area coverage and low-speed hover.",
+        "cases.3.b1": "· 120+ km range with multiple payload options",
+        "cases.3.b2": "· VTOL capability, no dedicated runway required",
+        "cases.3.b3": "· Works with command vehicles and mobile ground stations",
+
+        "company.section.title": "Company",
+        "company.section.heading": "About RunwayMaster UAV Factory",
+        "company.section.desc": "RunwayMaster focuses on industrial-grade UAV design, manufacturing and system integration, covering everything from structure and electronics to testing and fleet management.",
+        "company.p1": "We work with leading enterprises and integrators, offering OEM / ODM customization, multi-region certifications and local delivery to build scalable UAV product lines.",
+        "company.p2": "Our plant layout spans assembly, testing, warehousing and flight ranges, supporting both rapid small batches and stable mass production.",
+        "company.metric.area": "Factory Area",
+        "company.metric.area.note": "Integrated footprint spanning assembly, testing, warehousing and flight range.",
+        "company.metric.stations": "Production / Test Stations",
+        "company.metric.stations.note": "50+ synchronized stations for assembly, calibration and burn-in.",
+        "company.metric.team": "R&D & Engineering Team",
+        "company.metric.team.note": "Cross-disciplinary engineers across structure, avionics and software.",
+        "company.metric.industry": "Industries Served",
+        "company.metric.industry.value": "Power / Security / Emergency / Mapping",
+        "company.metric.industry.note": "OEM / ODM delivery plus operations support for diverse sectors.",
+
+        "contact.section.title": "Contact & RFQ",
+        "contact.section.heading": "Leave your email and we’ll reach out with factory solutions",
+        "contact.label": "Business contact email: ",
+        "contact.hint": "* After submission, we’ll contact you via email to discuss distribution, customization or project cooperation.",
+        "contact.submit": "Submit",
+
+        "footer.nav.customized": "Customized",
+        "footer.nav.download": "Download",
+        "footer.nav.company": "Company",
+        "footer.nav.contact": "Contact",
+        "footer.rights": "All rights reserved."
+      }
+    };
+
+    function setLanguage(lang) {
+      const dict = translations[lang] || translations["zh"];
+
+      // html 标签上的 lang，方便将来 SEO / 可访问性
+      document.documentElement.setAttribute("data-lang", lang);
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+
+      if (dict["page.title"]) {
+        document.title = dict["page.title"];
+      }
+
+      document.querySelectorAll("[data-i18n-key]").forEach(el => {
+        const key = el.getAttribute("data-i18n-key");
+        const text = dict[key];
+        if (typeof text === "string") {
+          // 如果是链接内的文本，只更新文本内容，保留链接结构
+          if (el.tagName === "A" && el.querySelector("span")) {
+            const span = el.querySelector("span");
+            if (span) span.textContent = text;
+          } else {
+            el.textContent = text;
+          }
+        }
+      });
+      
+      // 更新导航中的语言
+      const navContainer = document.getElementById('nav-container');
+      if (navContainer) {
+        navContainer.querySelectorAll("[data-i18n-key]").forEach(el => {
+          const key = el.getAttribute("data-i18n-key");
+          const text = dict[key];
+          if (typeof text === "string") {
+            // 如果元素有子元素span，更新span内容，否则更新元素本身
+            const span = el.querySelector("span");
+            if (span) {
+              span.textContent = text;
+            } else {
+              el.textContent = text;
+            }
+          }
+        });
+        
+        // 更新导航中的语言切换按钮状态
+        navContainer.querySelectorAll("[data-lang-btn]").forEach(btn => {
+          const btnLang = btn.getAttribute("data-lang-btn");
+          btn.classList.toggle("active", btnLang === lang);
+        });
+      }
+
+      document.querySelectorAll("[data-lang-btn]").forEach(btn => {
+        const btnLang = btn.getAttribute("data-lang-btn");
+        btn.classList.toggle("active", btnLang === lang);
+      });
+
+      // 记住用户选择
+      try {
+        localStorage.setItem("site-lang", lang);
+      } catch (e) {}
+    }
+
+    // 绑定语言切换按钮
+    document.querySelectorAll("[data-lang-btn]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const lang = btn.getAttribute("data-lang-btn");
+        setLanguage(lang);
+      });
+    });
+
+    // 初始化语言（优先读 localStorage）
+    (function initLang() {
+      let defaultLang = "zh";
+      try {
+        const stored = localStorage.getItem("site-lang");
+        if (stored && translations[stored]) defaultLang = stored;
+      } catch (e) {}
+      setLanguage(defaultLang);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>About Us · RunwayMaster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="RunwayMaster (Thailand) delivers end-to-end UAV solutions—turnkey exports and OEM/ODM development.">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .lang-toggle-btn {
+      border-radius: 999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #a1a1aa;
+    }
+    .lang-toggle-btn.active {
+      border-color: #f97316;
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.15);
+    }
+    .fullscreen-video {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .fullscreen-video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .key-advantages-section {
+      position: relative;
+      text-align: center;
+      padding: 3rem 0;
+    }
+    .key-advantages-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('map.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.3;
+      z-index: 1;
+    }
+    .key-advantages-content {
+      position: relative;
+      z-index: 2;
+    }
+    select {
+      padding-right: 3rem;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a1a1aa' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1.5rem center;
+      background-size: 0.75rem;
+    }
+    .form-section {
+      text-align: left;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-black text-white flex flex-col">
+  <!-- 导航占位符 -->
+  <div id="nav-container"></div>
+
+  <script>
+    // 加载导航组件
+    fetch('../Nav/partials/nav.html')
+      .then(response => response.text())
+      .then(html => {
+        // 创建临时容器来解析 HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        
+        // 提取 header 和移动端导航
+        const header = tempDiv.querySelector('header');
+        const mobileNavBackdrop = tempDiv.querySelector('#mobile-nav-backdrop');
+        const mobileNav = tempDiv.querySelector('#mobile-nav');
+        
+        // 将 header 和移动端导航添加到 nav-container
+        const navContainer = document.getElementById('nav-container');
+        if (header) navContainer.appendChild(header);
+        if (mobileNavBackdrop) navContainer.appendChild(mobileNavBackdrop);
+        if (mobileNav) navContainer.appendChild(mobileNav);
+        
+        // 提取 footer 并添加到页面底部
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+        if (footerPlaceholder) {
+          const footer = tempDiv.querySelector('footer');
+          if (footer) {
+            // 克隆 footer 以避免重复引用问题
+            const footerClone = footer.cloneNode(true);
+            footerPlaceholder.replaceWith(footerClone);
+          }
+        }
+        
+        // 根据当前页面调整导航链接路径
+        const currentPath = window.location.pathname;
+        const isHomePage = false; // About us 页面
+        
+        // 更新 logo 和链接路径
+        const logoLinks = document.querySelectorAll('.nav-logo-link');
+        const logoImgs = document.querySelectorAll('.nav-logo-img');
+        logoLinks.forEach(link => {
+          link.href = '../Home/index.html';
+        });
+        logoImgs.forEach(img => {
+          img.src = '../Home/logo.svg';
+        });
+        
+        // 更新导航链接
+        document.querySelectorAll('.nav-link-customized').forEach(link => {
+          link.href = '../Home/index.html#customized';
+        });
+          document.querySelectorAll('.nav-link-case-center').forEach(link => {
+            link.href = '../Case center/case center.html';
+          });
+        document.querySelectorAll('.nav-link-downloads').forEach(link => {
+          link.href = '../Downloads/downloads.html';
+        });
+        document.querySelectorAll('.nav-link-contact').forEach(link => {
+          link.href = '../Home/index.html#contact';
+        });
+        document.querySelectorAll('.nav-link-company').forEach(link => {
+          link.href = 'About us.html';
+        });
+        
+        // 更新底部导航链接
+        document.querySelectorAll('footer .nav-link-customized').forEach(link => {
+          link.href = '../Home/index.html#customized';
+        });
+        document.querySelectorAll('footer .nav-link-downloads').forEach(link => {
+          link.href = '../Downloads/downloads.html';
+        });
+        document.querySelectorAll('footer .nav-link-company').forEach(link => {
+          link.href = 'About us.html';
+        });
+        document.querySelectorAll('footer .nav-link-contact').forEach(link => {
+          link.href = '../Home/index.html#contact';
+        });
+        
+        // 初始化移动端导航功能
+        initMobileNav();
+        
+        // 初始化年份（在 footer 加载后）
+        setTimeout(() => {
+          const yearEl = document.getElementById('year');
+          if (yearEl) {
+            yearEl.textContent = new Date().getFullYear();
+          }
+        }, 100);
+        
+        // 绑定导航中的语言切换按钮
+        bindLangButtons();
+        
+        // 初始化语言（在导航加载后，确保导航也能正确显示）
+        setTimeout(() => {
+          let defaultLang = "zh";
+          try {
+            const stored = localStorage.getItem("site-lang");
+            if (stored && translations[stored]) defaultLang = stored;
+          } catch (e) {}
+          setLanguage(defaultLang);
+        }, 100);
+      })
+      .catch(error => {
+        console.error('加载导航失败:', error);
+      });
+    
+    function bindLangButtons() {
+      // 使用事件委托，这样即使导航是动态加载的也能工作
+      document.addEventListener("click", function(e) {
+        const btn = e.target.closest("[data-lang-btn]");
+        if (btn) {
+          e.preventDefault();
+          const lang = btn.getAttribute("data-lang-btn");
+          setLanguage(lang);
+        }
+      });
+    }
+    
+    function initMobileNav() {
+      const mobileNav = document.getElementById("mobile-nav");
+      const mobileBackdrop = document.getElementById("mobile-nav-backdrop");
+      const mobileOpenBtn = document.getElementById("mobile-nav-open");
+      const mobileCloseBtn = document.getElementById("mobile-nav-close");
+      const mobileNavLinks = mobileNav ? mobileNav.querySelectorAll("[data-mobile-nav-link]") : [];
+
+      function setMobileNav(open) {
+        if (!mobileNav || !mobileBackdrop) return;
+        mobileNav.classList.toggle("-translate-x-full", !open);
+        mobileNav.setAttribute("aria-hidden", (!open).toString());
+        mobileBackdrop.classList.toggle("opacity-100", open);
+        mobileBackdrop.classList.toggle("pointer-events-auto", open);
+      }
+
+      [mobileOpenBtn, mobileCloseBtn].forEach(btn => {
+        if (!btn) return;
+        btn.addEventListener("click", () => setMobileNav(btn === mobileOpenBtn));
+      });
+
+      if (mobileBackdrop) {
+        mobileBackdrop.addEventListener("click", () => setMobileNav(false));
+      }
+
+      mobileNavLinks.forEach(link => {
+        link.addEventListener("click", () => setMobileNav(false));
+      });
+
+      const mq = window.matchMedia("(min-width: 768px)");
+      if (mq && mq.addEventListener) {
+        mq.addEventListener("change", e => {
+          if (e.matches) setMobileNav(false);
+        });
+      }
+    }
+  </script>
+
+  <!-- 主体内容 -->
+  <main>
+    <!-- 全屏视频 -->
+    <section class="fullscreen-video">
+      <video autoplay muted loop playsinline>
+        <source src="../Home/zongzhuang.mp4" type="video/mp4" />
+      </video>
+    </section>
+
+    <!-- 文字内容 -->
+    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold mb-6 text-center" data-i18n-key="about.title">Runway Master</h1>
+      
+      <p class="text-sm md:text-base text-zinc-300 leading-relaxed mb-8 max-w-4xl mx-auto text-center" data-i18n-key="about.desc">
+        Runway Master (Thailand) delivers end-to-end UAV solutions—turnkey exports and OEM/ODM development. We build multirotor and fixed-wing/VTOL platforms for film, inspection, mapping, agriculture, and FPV. Capabilities include HD video links, RTK/PPK, obstacle avoidance, and formation flight. With an in-house factory and senior engineers, we run a closed-loop process from prototyping to mass production, backed by 24/7 project tracking, technical docs, remote/on-site support, and global compliance & customs assistance.
+      </p>
+
+      <div class="key-advantages-section max-w-4xl mx-auto mb-12">
+        <div class="key-advantages-bg"></div>
+        <div class="key-advantages-content">
+          <h2 class="text-xl md:text-2xl font-semibold mb-4 text-orange-300" data-i18n-key="about.advantages.title">Key Advantages</h2>
+          <ul class="space-y-3 text-sm md:text-base text-zinc-300 text-left inline-block">
+            <li class="flex items-start gap-2" data-i18n-key="about.advantages.1">
+              <span class="text-orange-400 mt-1">•</span>
+              <span>Full-stack: ready-to-ship + OEM/ODM + component sourcing</span>
+            </li>
+            <li class="flex items-start gap-2" data-i18n-key="about.advantages.2">
+              <span class="text-orange-400 mt-1">•</span>
+              <span>Multi-scenario coverage (cinema, agri, survey, FPV)</span>
+            </li>
+            <li class="flex items-start gap-2" data-i18n-key="about.advantages.3">
+              <span class="text-orange-400 mt-1">•</span>
+              <span>Milestone delivery: prototype → pilot → volume</span>
+            </li>
+            <li class="flex items-start gap-2" data-i18n-key="about.advantages.4">
+              <span class="text-orange-400 mt-1">•</span>
+              <span>Joint tuning: flight control/video/payload/GCS</span>
+            </li>
+            <li class="flex items-start gap-2" data-i18n-key="about.advantages.5">
+              <span class="text-orange-400 mt-1">•</span>
+              <span>Global service: 24/7 follow-up, training, after-sales</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- GLOBAL FACTORY -->
+    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
+      <h2 class="text-2xl md:text-3xl font-semibold mb-3 text-center" data-i18n-key="about.factory.title">GLOBAL FACTORY</h2>
+      <p class="text-sm md:text-base text-zinc-400 mb-8 text-center" data-i18n-key="about.factory.desc">
+        With 100 factories worldwide backing our supply chain, we welcome you to partner with us!
+      </p>
+
+      <!-- Google 地图 -->
+      <div class="mb-8 rounded-2xl overflow-hidden border border-zinc-800" style="height: 400px;">
+        <iframe
+          src="https://www.google.com/maps?q=Buriram+Thailand&output=embed"
+          width="100%"
+          height="100%"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+
+      <!-- Head Factory -->
+      <div class="text-center">
+        <h3 class="text-xl md:text-2xl font-semibold mb-2" data-i18n-key="about.factory.head.title">Head Factory</h3>
+        <p class="text-sm md:text-base text-zinc-300">
+          <span data-i18n-key="about.factory.head.email">Email:</span> <a href="mailto:linxiaofenghe@gmail.com" class="text-orange-300 hover:text-orange-200 underline">linxiaofenghe@gmail.com</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- PARTNERS -->
+    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
+      <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-center" data-i18n-key="about.partners.title">PARTNERS</h2>
+      <p class="text-sm md:text-base text-zinc-300 leading-relaxed mb-8 text-center max-w-4xl mx-auto" data-i18n-key="about.partners.desc">
+        Runway Master is seeking drone distributors in all regions. We specialize in exporting drones for aerial photography, agriculture, FPV, and accessories, offering complete drone supply and OEM/ODM customization. We offer high profit margins, price guarantees, prototypes, training support, marketing materials, and 24/7 technical support. We look forward to collaborating with our channel partners to expand the market and achieve shared growth.
+      </p>
+      <p class="text-sm md:text-base text-zinc-300 mb-12 text-center">
+        <span data-i18n-key="about.partners.contact">Contact:</span> <a href="mailto:linxiaofenghe@gmail.com" class="text-orange-300 hover:text-orange-200 underline">linxiaofenghe@gmail.com</a>
+      </p>
+
+      <!-- 表单 -->
+      <div class="rounded-3xl border border-zinc-800 bg-zinc-950 p-6 md:p-8">
+        <form id="partners-form" action="https://formsubmit.co/el/gofilo" method="POST" class="space-y-6 form-section">
+          <!-- 隐藏字段 -->
+          <input type="hidden" name="_subject" value="RunwayMaster About Us 页面表单提交" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_next" value="" />
+
+          <!-- Mail -->
+          <div>
+            <label for="mail" class="block text-sm font-medium text-zinc-300 mb-2" data-i18n-key="form.mail.label">Mail *</label>
+            <input
+              type="email"
+              id="mail"
+              name="mail"
+              required
+              class="w-full rounded-lg border border-zinc-700 bg-black/60 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-orange-400 disabled:opacity-50 disabled:cursor-not-allowed"
+              placeholder="your@email.com"
+              data-i18n-placeholder="form.mail.placeholder"
+            />
+          </div>
+
+          <!-- Tel -->
+          <div>
+            <label for="tel" class="block text-sm font-medium text-zinc-300 mb-2" data-i18n-key="form.tel.label">Tel</label>
+            <input
+              type="tel"
+              id="tel"
+              name="tel"
+              class="w-full rounded-lg border border-zinc-700 bg-black/60 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-orange-400 disabled:opacity-50 disabled:cursor-not-allowed"
+              placeholder="Your phone number"
+              data-i18n-placeholder="form.tel.placeholder"
+            />
+          </div>
+
+          <!-- Your role -->
+          <div>
+            <label for="role" class="block text-sm font-medium text-zinc-300 mb-2" data-i18n-key="form.role.label">Your role *</label>
+            <select
+              id="role"
+              name="role"
+              required
+              class="w-full rounded-lg border border-zinc-700 bg-black/60 px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:border-orange-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="" data-i18n-key="form.select">请选择</option>
+              <option value="Client" data-i18n-key="form.role.option1">Client</option>
+              <option value="Agent" data-i18n-key="form.role.option2">Agent</option>
+              <option value="Join us" data-i18n-key="form.role.option3">Join us</option>
+              <option value="Customized" data-i18n-key="form.role.option4">Customized</option>
+            </select>
+          </div>
+
+          <!-- Drone type -->
+          <div>
+            <label for="drone-type" class="block text-sm font-medium text-zinc-300 mb-2" data-i18n-key="form.drone.label">Drone type *</label>
+            <select
+              id="drone-type"
+              name="drone-type"
+              required
+              class="w-full rounded-lg border border-zinc-700 bg-black/60 px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:border-orange-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="" data-i18n-key="form.select">请选择</option>
+              <option value="FPV" data-i18n-key="form.drone.option0">FPV</option>
+              <option value="多旋翼无人机" data-i18n-key="form.drone.option1">多旋翼无人机</option>
+              <option value="反无人机" data-i18n-key="form.drone.option2">反无人机</option>
+            </select>
+          </div>
+
+          <!-- Detail -->
+          <div>
+            <label for="detail" class="block text-sm font-medium text-zinc-300 mb-2" data-i18n-key="form.detail.label">Detail</label>
+            <textarea
+              id="detail"
+              name="detail"
+              rows="4"
+              class="w-full rounded-lg border border-zinc-700 bg-black/60 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-orange-400 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+              placeholder="Tell us more about your needs..."
+              data-i18n-placeholder="form.detail.placeholder"
+            ></textarea>
+          </div>
+
+          <!-- Privacy Policy -->
+          <p class="text-xs text-zinc-500 text-center" data-i18n-key="form.privacy">
+            Privacy Policy and Terms of Use.
+          </p>
+
+          <!-- 提交按钮 -->
+          <div class="flex justify-center">
+            <button
+              type="submit"
+              id="partners-submit-btn"
+              class="rounded-full bg-orange-500 border border-white text-[11px] md:text-xs font-semibold uppercase tracking-[0.18em] text-white hover:bg-orange-400 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-orange-500"
+              style="width: 220px; height: 40px;"
+            >
+              <span id="partners-submit-text" data-i18n-key="form.submit">提交</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部导航占位符 -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    // 多语言字典
+    const translations = {
+      zh: {
+        "about.title": "Runway Master",
+        "about.desc": "Runway Master (Thailand) 提供端到端无人机解决方案——整机出口和 OEM/ODM 开发。我们为影视、巡检、测绘、农业和 FPV 构建多旋翼和固定翼/VTOL 平台。能力包括高清视频链路、RTK/PPK、避障和编队飞行。凭借内部工厂和资深工程师，我们运行从原型到批量生产的闭环流程，提供 24/7 项目跟踪、技术文档、远程/现场支持以及全球合规和海关协助。",
+        "about.advantages.title": "核心优势",
+        "about.advantages.1": "• 全栈：即发即用 + OEM/ODM + 组件采购",
+        "about.advantages.2": "• 多场景覆盖（影视、农业、测绘、FPV）",
+        "about.advantages.3": "• 里程碑交付：原型 → 试点 → 批量",
+        "about.advantages.4": "• 联合调优：飞控/视频/载荷/地面站",
+        "about.advantages.5": "• 全球服务：24/7 跟进、培训、售后",
+        "about.factory.title": "全球工厂",
+        "about.factory.desc": "全球 100 家工厂支撑我们的供应链，欢迎您与我们合作！",
+        "about.factory.head.title": "总部工厂",
+        "about.factory.head.email": "邮箱：",
+        "about.partners.title": "合作伙伴",
+        "about.partners.desc": "Runway Master 正在全球各地区寻找无人机经销商。我们专注于出口用于航拍、农业、FPV 和配件的无人机，提供完整的无人机供应和 OEM/ODM 定制。我们提供高利润率、价格保证、原型、培训支持、营销材料和 24/7 技术支持。我们期待与渠道合作伙伴合作，扩大市场并实现共同增长。",
+        "about.partners.contact": "联系方式：",
+        "form.submit": "提交",
+        "form.mail.label": "邮箱 *",
+        "form.mail.placeholder": "请输入您的邮箱",
+        "form.tel.label": "电话",
+        "form.tel.placeholder": "您的电话号码",
+        "form.role.label": "您的角色 *",
+        "form.role.option1": "客户",
+        "form.role.option2": "代理商",
+        "form.role.option3": "加入我们",
+        "form.role.option4": "定制化",
+        "form.drone.label": "无人机类型 *",
+        "form.select": "请选择",
+        "form.drone.option0": "FPV",
+        "form.drone.option1": "多旋翼无人机",
+        "form.drone.option2": "反无人机",
+        "form.detail.label": "详情",
+        "form.detail.placeholder": "请告诉我们更多关于您的需求...",
+        "form.privacy": "隐私政策和使用条款。"
+      },
+      en: {
+        "about.title": "Runway Master",
+        "about.desc": "Runway Master (Thailand) delivers end-to-end UAV solutions—turnkey exports and OEM/ODM development. We build multirotor and fixed-wing/VTOL platforms for film, inspection, mapping, agriculture, and FPV. Capabilities include HD video links, RTK/PPK, obstacle avoidance, and formation flight. With an in-house factory and senior engineers, we run a closed-loop process from prototyping to mass production, backed by 24/7 project tracking, technical docs, remote/on-site support, and global compliance & customs assistance.",
+        "about.advantages.title": "Key Advantages",
+        "about.advantages.1": "• Full-stack: ready-to-ship + OEM/ODM + component sourcing",
+        "about.advantages.2": "• Multi-scenario coverage (cinema, agri, survey, FPV)",
+        "about.advantages.3": "• Milestone delivery: prototype → pilot → volume",
+        "about.advantages.4": "• Joint tuning: flight control/video/payload/GCS",
+        "about.advantages.5": "• Global service: 24/7 follow-up, training, after-sales",
+        "about.factory.title": "GLOBAL FACTORY",
+        "about.factory.desc": "With 100 factories worldwide backing our supply chain, we welcome you to partner with us!",
+        "about.factory.head.title": "Head Factory",
+        "about.factory.head.email": "Email:",
+        "about.partners.title": "PARTNERS",
+        "about.partners.desc": "Runway Master is seeking drone distributors in all regions. We specialize in exporting drones for aerial photography, agriculture, FPV, and accessories, offering complete drone supply and OEM/ODM customization. We offer high profit margins, price guarantees, prototypes, training support, marketing materials, and 24/7 technical support. We look forward to collaborating with our channel partners to expand the market and achieve shared growth.",
+        "about.partners.contact": "Contact:",
+        "form.submit": "SUBMIT",
+        "form.mail.label": "Mail *",
+        "form.mail.placeholder": "your@email.com",
+        "form.tel.label": "Tel",
+        "form.tel.placeholder": "Your phone number",
+        "form.role.label": "Your role *",
+        "form.role.option1": "Client",
+        "form.role.option2": "Agent",
+        "form.role.option3": "Join us",
+        "form.role.option4": "Customized",
+        "form.drone.label": "Drone type *",
+        "form.select": "Please select",
+        "form.drone.option0": "FPV",
+        "form.drone.option1": "Multirotor Drone",
+        "form.drone.option2": "Anti-Drone",
+        "form.detail.label": "Detail",
+        "form.detail.placeholder": "Tell us more about your needs...",
+        "form.privacy": "Privacy Policy and Terms of Use."
+      }
+    };
+
+    // 表单提交状态管理
+    document.addEventListener('DOMContentLoaded', () => {
+      const partnersForm = document.getElementById('partners-form');
+      const mailInput = document.getElementById('mail');
+      const telInput = document.getElementById('tel');
+      const roleSelect = document.getElementById('role');
+      const droneTypeSelect = document.getElementById('drone-type');
+      const detailTextarea = document.getElementById('detail');
+      const partnersSubmitBtn = document.getElementById('partners-submit-btn');
+      const partnersSubmitText = document.getElementById('partners-submit-text');
+      
+      // 检查是否已提交（使用 sessionStorage，刷新后恢复）
+      const formSubmitted = sessionStorage.getItem('partners-form-submitted');
+      if (formSubmitted === 'true') {
+        [mailInput, telInput, roleSelect, droneTypeSelect, detailTextarea].forEach(el => {
+          if (el) el.disabled = true;
+        });
+        if (partnersSubmitBtn) {
+          partnersSubmitBtn.disabled = true;
+          const currentLang = document.documentElement.lang || 'zh';
+          if (partnersSubmitText) {
+            partnersSubmitText.textContent = currentLang === 'zh' ? '已提交' : 'Submitted';
+          }
+        }
+      }
+
+      if (partnersForm) {
+        partnersForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          // 如果已提交，不处理
+          if (partnersSubmitBtn && partnersSubmitBtn.disabled) {
+            return;
+          }
+
+          const formData = new FormData(partnersForm);
+          
+          try {
+            // 提交表单
+            const response = await fetch('https://formsubmit.co/el/gofilo', {
+              method: 'POST',
+              body: formData
+            });
+
+            if (response.ok) {
+              // 标记为已提交
+              sessionStorage.setItem('partners-form-submitted', 'true');
+              
+              // 禁用所有输入和按钮
+              [mailInput, telInput, roleSelect, droneTypeSelect, detailTextarea].forEach(el => {
+                if (el) el.disabled = true;
+              });
+              if (partnersSubmitBtn) {
+                partnersSubmitBtn.disabled = true;
+                const currentLang = document.documentElement.lang || 'zh';
+                if (partnersSubmitText) {
+                  partnersSubmitText.textContent = currentLang === 'zh' ? '已提交' : 'Submitted';
+                }
+              }
+            }
+          } catch (error) {
+            console.error('表单提交失败:', error);
+            alert('提交失败，请稍后重试');
+          }
+        });
+      }
+    });
+
+    function setLanguage(lang) {
+      const dict = translations[lang] || translations["zh"];
+      document.documentElement.setAttribute("data-lang", lang);
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      
+      document.querySelectorAll("[data-i18n-key]").forEach(el => {
+        const key = el.getAttribute("data-i18n-key");
+        const text = dict[key];
+        if (typeof text === "string") {
+          // 如果是链接内的文本，只更新文本内容，保留链接结构
+          if (el.tagName === "A" && el.querySelector("span")) {
+            const span = el.querySelector("span");
+            if (span) span.textContent = text;
+          } else if (el.tagName === "OPTION") {
+            // 对于 option 元素，更新文本内容
+            el.textContent = text;
+          } else {
+            el.textContent = text;
+          }
+        }
+      });
+      
+      // 更新所有 select 中的 option（包括没有 data-i18n-key 的）
+      document.querySelectorAll("select option[data-i18n-key]").forEach(option => {
+        const key = option.getAttribute("data-i18n-key");
+        const text = dict[key];
+        if (typeof text === "string") {
+          option.textContent = text;
+        }
+      });
+      
+      // 更新 placeholder
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        const text = dict[key];
+        if (typeof text === "string") {
+          el.placeholder = text;
+        }
+      });
+
+      document.querySelectorAll("[data-lang-btn]").forEach(btn => {
+        const btnLang = btn.getAttribute("data-lang-btn");
+        btn.classList.toggle("active", btnLang === lang);
+      });
+
+      // 更新导航中的语言
+      const navContainer = document.getElementById('nav-container');
+      if (navContainer) {
+        navContainer.querySelectorAll("[data-i18n-key]").forEach(el => {
+          const key = el.getAttribute("data-i18n-key");
+          const text = dict[key];
+          if (typeof text === "string") {
+            // 如果元素有子元素span，更新span内容，否则更新元素本身
+            const span = el.querySelector("span");
+            if (span) {
+              span.textContent = text;
+            } else {
+              el.textContent = text;
+            }
+          }
+        });
+      }
+      
+      // 更新导航中的语言切换按钮状态
+      if (navContainer) {
+        navContainer.querySelectorAll("[data-lang-btn]").forEach(btn => {
+          const btnLang = btn.getAttribute("data-lang-btn");
+          btn.classList.toggle("active", btnLang === lang);
+        });
+      }
+
+      try {
+        localStorage.setItem("site-lang", lang);
+      } catch (e) {}
+    }
+
+    // 绑定语言切换按钮（初始绑定，导航加载后会重新绑定）
+    function bindInitialLangButtons() {
+      document.querySelectorAll("[data-lang-btn]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const lang = btn.getAttribute("data-lang-btn");
+          setLanguage(lang);
+        });
+      });
+    }
+    
+    // 初始绑定
+    bindInitialLangButtons();
+
+    // 初始化语言
+    (function initLang() {
+      let defaultLang = "zh";
+      try {
+        const stored = localStorage.getItem("site-lang");
+        if (stored && translations[stored]) defaultLang = stored;
+      } catch (e) {}
+      setLanguage(defaultLang);
+    })();
+  </script>
+</body>
+</html>
+

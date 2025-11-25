@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Case Center · 新闻中心</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="RunwayMaster Case Center · 新闻与案例更新。">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-black text-white flex flex-col">
+
+  <!-- 导航占位符 -->
+  <div id="nav-container"></div>
+
+  <main class="flex-1 pt-20 md:pt-24 max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-10 md:py-16">
+    <!-- 顶部标题 -->
+    <header class="mb-10 md:mb-14">
+      <p class="text-xs tracking-[0.35em] uppercase text-orange-300 mb-3">
+        CASE CENTER
+      </p>
+      <div>
+        <h1 class="text-2xl md:text-3xl font-semibold tracking-tight mb-2">
+          新闻中心 · 最新案例动态
+        </h1>
+        <p class="text-sm md:text-base text-zinc-300 max-w-2xl">
+          记录每一次交付、每一场飞行与每一个落地项目，和你分享 RunwayMaster 的最新进展。
+        </p>
+      </div>
+      <!-- 原来的筛选区已删除 -->
+    </header>
+
+    <!-- 主体：时间线 + 新闻卡片（时间线拉到底，每条新闻一个时间点） -->
+    <section class="relative">
+
+      <!-- 一条竖线拉到底 -->
+      <div class="pointer-events-none absolute left-16 md:left-24 top-0 bottom-0 w-px bg-zinc-800"></div>
+
+      <div class="space-y-8 md:space-y-10">
+
+        <!-- 新闻 1 -->
+        <article class="relative pl-32 md:pl-40">
+          <!-- 时间节点 -->
+          <div class="absolute left-16 md:left-24 top-10 -translate-x-1/2 flex flex-col items-center">
+            <!-- 时间点圆点 -->
+            <div class="w-3.5 h-3.5 rounded-full bg-orange-500 shadow-[0_0_0_5px_rgba(249,115,22,0.25)]"></div>
+            <!-- 时间文字（加大） -->
+            <div class="mt-3 text-sm md:text-base font-semibold text-zinc-100 tracking-[0.12em]">
+              2025 · 06
+            </div>
+          </div>
+
+          <!-- 卡片本体 -->
+          <a
+            href="case center/2025.06/new1.html"
+            class="group block rounded-3xl border border-zinc-800 bg-zinc-950/70 hover:border-orange-400/80 hover:bg-zinc-900/80 transition overflow-hidden cursor-pointer"
+          >
+            <div class="grid md:grid-cols-[260px_minmax(0,1fr)] gap-4 md:gap-6 items-stretch">
+              <!-- 左：封面图 -->
+              <div class="relative h-full">
+                <div class="h-44 md:h-full overflow-hidden">
+                  <img
+                    src="../Home/amav 15.png"
+                    alt="Amav 15 工业版机队交付现场"
+                    class="w-full h-full object-cover transform group-hover:scale-[1.03] transition"
+                  />
+                </div>
+              </div>
+              <!-- 右：文字 -->
+              <div class="p-4 md:p-6 flex flex-col justify-between">
+                <div class="space-y-2 md:space-y-3">
+                  <div class="flex flex-wrap items-center gap-2 text-[11px] text-zinc-400">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full border border-zinc-700 bg-black/40 text-[10px] text-orange-200">
+                      交付案例
+                    </span>
+                    <span>2025-06-18</span>
+                    <span class="hidden md:inline-block text-zinc-600">|</span>
+                    <span class="hidden md:inline-block text-zinc-500">东南亚 · 工业巡检</span>
+                  </div>
+                  <h3 class="text-base md:text-lg font-semibold group-hover:text-orange-300 transition">
+                    RunwayMaster 完成 Amav 15 工业版首批海外机队交付
+                  </h3>
+                  <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
+                    首批 Amav 15 工业版机队在东南亚正式交付，用于电力巡检与边境安防任务。
+                    通过统一的图传与地面站方案，当地团队可以在复杂地形中快速部署飞行任务。
+                  </p>
+                </div>
+                <div class="mt-3 md:mt-4 flex items-center justify-between text-[11px] md:text-xs text-zinc-400">
+                  <span>阅读时间约 3 分钟</span>
+                  <span class="inline-flex items-center gap-1 group-hover:text-orange-300 transition">
+                    <span>查看详情</span>
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.6">
+                      <path d="M5 12h14M13 6l6 6-6 6"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </article>
+
+        <!-- 新闻 2 -->
+        <article class="relative pl-32 md:pl-40">
+          <!-- 时间节点 -->
+          <div class="absolute left-16 md:left-24 top-10 -translate-x-1/2 flex flex-col items-center">
+            <div class="w-3 h-3 rounded-full bg-zinc-500 group-hover:bg-orange-400 transition"></div>
+            <div class="mt-3 text-sm md:text-base font-semibold text-zinc-100 tracking-[0.12em]">
+              2025 · 03
+            </div>
+          </div>
+
+          <!-- 卡片本体 -->
+          <a
+            href="news-2025-03-industrial-solution.html"
+            class="group block rounded-3xl border border-zinc-800 bg-zinc-950/70 hover:border-orange-400/80 hover:bg-zinc-900/80 transition overflow-hidden"
+          >
+            <div class="grid md:grid-cols-[260px_minmax(0,1fr)] gap-4 md:gap-6 items-stretch">
+              <!-- 左：封面图 -->
+              <div class="relative h-full">
+                <div class="h-44 md:h-full overflow-hidden">
+                  <img
+                    src="../Home/daotong.png"
+                    alt="工业无人机联合方案发布"
+                    class="w-full h-full object-cover transform group-hover:scale-[1.03] transition"
+                  />
+                </div>
+              </div>
+              <!-- 右：文字 -->
+              <div class="p-4 md:p-6 flex flex-col justify-between">
+                <div class="space-y-2 md:space-y-3">
+                  <div class="flex flex-wrap items-center gap-2 text-[11px] text-zinc-400">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full border border-zinc-700 bg-black/40 text-[10px] text-orange-200">
+                      工业应用
+                    </span>
+                    <span>2025-03-02</span>
+                    <span class="hidden md:inline-block text-zinc-600">|</span>
+                    <span class="hidden md:inline-block text-zinc-500">电力 / 石化巡检</span>
+                  </div>
+                  <h3 class="text-base md:text-lg font-semibold group-hover:text-orange-300 transition">
+                    与行业合作伙伴发布「工业巡检一体化解决方案」
+                  </h3>
+                  <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
+                    基于工业多旋翼与固定翼平台，RunwayMaster 联合生态伙伴推出电力、石化等行业的
+                    一体化巡检方案，从无人机平台、载荷、软件到培训统一交付。
+                  </p>
+                </div>
+                <div class="mt-3 md:mt-4 flex items-center justify-between text-[11px] md:text-xs text-zinc-400">
+                  <span>阅读时间约 4 分钟</span>
+                  <span class="inline-flex items-center gap-1 group-hover:text-orange-300 transition">
+                    <span>查看详情</span>
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.6">
+                      <path d="M5 12h14M13 6l6 6-6 6"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </article>
+
+        <!-- 新闻 3 -->
+        <article class="relative pl-32 md:pl-40">
+          <!-- 时间节点 -->
+          <div class="absolute left-16 md:left-24 top-10 -translate-x-1/2 flex flex-col items-center">
+            <div class="w-3 h-3 rounded-full bg-zinc-500 group-hover:bg-orange-400 transition"></div>
+            <div class="mt-3 text-sm md:text-base font-semibold text-zinc-100 tracking-[0.12em]">
+              2024 · 11
+            </div>
+          </div>
+
+          <!-- 卡片本体 -->
+          <a
+            href="news-2024-11-anti-drone-demo.html"
+            class="group block rounded-3xl border border-zinc-800 bg-zinc-950/70 hover:border-orange-400/80 hover:bg-zinc-900/80 transition overflow-hidden"
+          >
+            <div class="grid md:grid-cols-[260px_minmax(0,1fr)] gap-4 md:gap-6 items-stretch">
+              <!-- 左：封面图 -->
+              <div class="relative h-full">
+                <div class="h-44 md:h-full overflow-hidden">
+                  <img
+                    src="../Home/fanwurenji.png"
+                    alt="反无人机系统实地演示"
+                    class="w-full h-full object-cover transform group-hover:scale-[1.03] transition"
+                  />
+                </div>
+              </div>
+              <!-- 右：文字 -->
+              <div class="p-4 md:p-6 flex flex-col justify-between">
+                <div class="space-y-2 md:space-y-3">
+                  <div class="flex flex-wrap items-center gap-2 text-[11px] text-zinc-400">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full border border-zinc-700 bg-black/40 text-[10px] text-orange-200">
+                      反无人机
+                    </span>
+                    <span>2024-11-21</span>
+                    <span class="hidden md:inline-block text-zinc-600">|</span>
+                    <span class="hidden md:inline-block text-zinc-500">边境 / 机场防护</span>
+                  </div>
+                  <h3 class="text-base md:text-lg font-semibold group-hover:text-orange-300 transition">
+                    固定式反无人机系统完成机场周界实地演示
+                  </h3>
+                  <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
+                    RunwayMaster 反无人机系统在某国际机场完成周界实地演示，集成雷达、光电与干扰模块，
+                    现场多批次模拟非法闯入目标，系统实现自动发现、跟踪与处置。
+                  </p>
+                </div>
+                <div class="mt-3 md:mt-4 flex items-center justify-between text-[11px] md:text-xs text-zinc-400">
+                  <span>阅读时间约 5 分钟</span>
+                  <span class="inline-flex items-center gap-1 group-hover:text-orange-300 transition">
+                    <span>查看详情</span>
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.6">
+                      <path d="M5 12h14M13 6l6 6-6 6"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部导航占位符 -->
+  <div id="footer-placeholder"></div>
+
+  <!-- 导航加载脚本 -->
+  <script>
+    fetch('../Nav/partials/nav.html')
+      .then(r => r.text())
+      .then(html => {
+        // 创建临时容器来解析 HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        // 提取 header 和移动端导航
+        const headerContent = tempDiv.querySelector('header');
+        const mobileNavBackdrop = tempDiv.querySelector('#mobile-nav-backdrop');
+        const mobileNav = tempDiv.querySelector('#mobile-nav');
+        const footer = tempDiv.querySelector('footer');
+
+        // 将 header 和 mobile nav 添加到 nav-container
+        if (headerContent) {
+          document.getElementById('nav-container').appendChild(headerContent);
+        }
+        if (mobileNavBackdrop) {
+          document.getElementById('nav-container').appendChild(mobileNavBackdrop);
+        }
+        if (mobileNav) {
+          document.getElementById('nav-container').appendChild(mobileNav);
+        }
+
+        // 将 footer 添加到 footer-placeholder
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+        if (footerPlaceholder && footer) {
+          const footerClone = footer.cloneNode(true);
+          footerPlaceholder.replaceWith(footerClone);
+        }
+
+        const currentPath = window.location.pathname;
+        const isHomePage = currentPath.includes('index.html')
+          || currentPath.endsWith('/')
+          || currentPath.endsWith('/Home/');
+
+        const logoLinks = document.querySelectorAll('.nav-logo-link');
+        const logoImgs = document.querySelectorAll('.nav-logo-img');
+        logoLinks.forEach(link => {
+          link.href = isHomePage ? 'index.html' : '../Home/index.html';
+        });
+        logoImgs.forEach(img => {
+          img.src = isHomePage ? 'logo.svg' : '../Home/logo.svg';
+        });
+
+        if (isHomePage) {
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+        } else {
+          document.querySelectorAll('.nav-link-customized').forEach(link => {
+            link.href = '../Home/index.html#customized';
+          });
+          document.querySelectorAll('.nav-link-case-center').forEach(link => {
+            link.href = 'case center.html';
+          });
+          document.querySelectorAll('.nav-link-downloads').forEach(link => {
+            link.href = '../Downloads/downloads.html';
+          });
+          document.querySelectorAll('.nav-link-contact').forEach(link => {
+            link.href = '../Home/index.html#contact';
+          });
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+        }
+
+        function initMobileNav() {
+          const mobileNav = document.getElementById("mobile-nav");
+          const mobileBackdrop = document.getElementById("mobile-nav-backdrop");
+          const mobileOpenBtn = document.getElementById("mobile-nav-open");
+          const mobileCloseBtn = document.getElementById("mobile-nav-close");
+          const mobileNavLinks = mobileNav ? mobileNav.querySelectorAll("[data-mobile-nav-link]") : [];
+
+          function setMobileNav(open) {
+            if (!mobileNav || !mobileBackdrop) return;
+            mobileNav.classList.toggle("-translate-x-full", !open);
+            mobileNav.setAttribute("aria-hidden", (!open).toString());
+            mobileBackdrop.classList.toggle("opacity-100", open);
+            mobileBackdrop.classList.toggle("pointer-events-auto", open);
+          }
+
+          [mobileOpenBtn, mobileCloseBtn].forEach(btn => {
+            if (!btn) return;
+            btn.addEventListener("click", () => setMobileNav(btn === mobileOpenBtn));
+          });
+
+          if (mobileBackdrop) {
+            mobileBackdrop.addEventListener("click", () => setMobileNav(false));
+          }
+
+          mobileNavLinks.forEach(link => {
+            link.addEventListener("click", () => setMobileNav(false));
+          });
+
+          const mq = window.matchMedia("(min-width: 768px)");
+          if (mq && mq.addEventListener) {
+            mq.addEventListener("change", e => {
+              if (e.matches) setMobileNav(false);
+            });
+          }
+        }
+
+        initMobileNav();
+
+        // 更新 footer 链接
+        const footerElement = document.querySelector('footer');
+        if (footerElement) {
+          document.querySelectorAll('footer .nav-link-customized').forEach(link => {
+            link.href = '../Home/index.html#customized';
+          });
+          document.querySelectorAll('footer .nav-link-downloads').forEach(link => {
+            link.href = '../Downloads/downloads.html';
+          });
+          document.querySelectorAll('footer .nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+          document.querySelectorAll('footer .nav-link-contact').forEach(link => {
+            link.href = '../Home/index.html#contact';
+          });
+          
+          const yearEl = document.getElementById('year');
+          if (yearEl) {
+            yearEl.textContent = new Date().getFullYear();
+          }
+        }
+      })
+      .catch(e => console.error('加载导航失败:', e));
+  </script>
+</body>
+</html>

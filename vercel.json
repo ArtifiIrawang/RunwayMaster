@@ -1,0 +1,43 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/Home/index.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/About us/About us.html"
+    },
+    {
+      "source": "/downloads",
+      "destination": "/Downloads/downloads.html"
+    },
+    {
+      "source": "/case-center",
+      "destination": "/Case center/case center.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}
+

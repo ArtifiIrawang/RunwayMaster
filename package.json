@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "serve Home -l 4173",
-    "build": "rm -rf dist && mkdir -p dist && cp -R Home dist && echo \"Static files copied to dist/\"",
-    "preview": "serve dist -l 4174"
+    "build": "node scripts/build.js",
+    "preview": "serve public -l 4174"
   },
   "devDependencies": {
     "serve": "^14.2.3"

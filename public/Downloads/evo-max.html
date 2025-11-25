@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVO Max · RunwayMaster</title>
+  <meta name="description" content="EVO Max 工业级多旋翼平台产品详情页">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .lang-toggle-btn {
+      border-radius: 999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #a1a1aa;
+    }
+    .lang-toggle-btn.active {
+      border-color: #f97316;
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.15);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-black text-white flex flex-col">
+  <!-- 导航占位符 -->
+  <div id="nav-container"></div>
+
+  <main class="flex-1 pt-20">
+    <!-- 产品详情内容区域 -->
+    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12">
+      <!-- 产品标题 -->
+      <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold mb-2" data-i18n-key="product.evomax.title">EVO Max · User Manual</h1>
+        <p class="text-zinc-400 text-sm md:text-base" data-i18n-key="product.evomax.subtitle">Complete user manual for EVO Max industry multirotor platform.</p>
+      </div>
+
+      <!-- 产品内容区域 -->
+      <div class="space-y-8">
+        <!-- 这里将放置您提供的产品详情内容 -->
+        <div class="prose prose-invert max-w-none">
+          <p class="text-zinc-300" data-i18n-key="product.evomax.content.placeholder">产品详情内容将在此处显示...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部导航占位符 -->
+  <div id="footer-placeholder"></div>
+
+  <!-- 导航加载和语言切换脚本 -->
+  <script>
+    // 翻译字典
+    const translations = {
+      zh: {
+        "product.evomax.title": "EVO Max · 用户手册",
+        "product.evomax.subtitle": "EVO Max 工业级多旋翼平台完整用户手册。",
+        "product.evomax.content.placeholder": "产品详情内容将在此处显示...",
+        "nav.customized": "定制化",
+        "nav.caseCenter": "案例中心",
+        "nav.downloads": "下载中心",
+        "nav.company": "关于我们",
+        "nav.rfq": "询价",
+        "footer.nav.customized": "定制化",
+        "footer.nav.download": "下载中心",
+        "footer.nav.company": "关于我们",
+        "footer.nav.contact": "联系我们",
+        "footer.rights": "保留所有权利。"
+      },
+      en: {
+        "product.evomax.title": "EVO Max · User Manual",
+        "product.evomax.subtitle": "Complete user manual for EVO Max industry multirotor platform.",
+        "product.evomax.content.placeholder": "Product details will be displayed here...",
+        "nav.customized": "CUSTOMIZED",
+        "nav.caseCenter": "CASE CENTER",
+        "nav.downloads": "DOWNLOADS",
+        "nav.company": "ABOUT US",
+        "nav.rfq": "RFQ",
+        "footer.nav.customized": "CUSTOMIZED",
+        "footer.nav.download": "DOWNLOADS",
+        "footer.nav.company": "ABOUT US",
+        "footer.nav.contact": "CONTACT",
+        "footer.rights": "All rights reserved."
+      }
+    };
+
+    // 语言切换函数
+    function setLanguage(lang) {
+      document.querySelectorAll("[data-i18n-key]").forEach(el => {
+        const key = el.getAttribute("data-i18n-key");
+        if (translations[lang] && translations[lang][key]) {
+          if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+            el.placeholder = translations[lang][key];
+          } else if (el.tagName === "OPTION") {
+            el.textContent = translations[lang][key];
+          } else {
+            el.textContent = translations[lang][key];
+          }
+        }
+      });
+      document.documentElement.lang = lang;
+    }
+
+    // 绑定语言切换按钮
+    function bindLangButtons() {
+      document.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-lang-btn]");
+        if (btn) {
+          const lang = btn.getAttribute("data-lang-btn");
+          document.querySelectorAll("[data-lang-btn]").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          setLanguage(lang);
+          try {
+            localStorage.setItem("site-lang", lang);
+          } catch (e) {}
+        }
+      });
+    }
+
+    // 移动端导航
+    function initMobileNav() {
+      const menuBtn = document.getElementById("mobile-menu-btn");
+      const closeBtn = document.getElementById("mobile-nav-close");
+      const backdrop = document.getElementById("mobile-nav-backdrop");
+      const nav = document.getElementById("mobile-nav");
+
+      if (menuBtn) {
+        menuBtn.addEventListener("click", () => {
+          if (backdrop) backdrop.classList.remove("opacity-0", "pointer-events-none");
+          if (nav) nav.classList.remove("-translate-x-full");
+          if (nav) nav.setAttribute("aria-hidden", "false");
+        });
+      }
+
+      function closeNav() {
+        if (backdrop) backdrop.classList.add("opacity-0", "pointer-events-none");
+        if (nav) nav.classList.add("-translate-x-full");
+        if (nav) nav.setAttribute("aria-hidden", "true");
+      }
+
+      if (closeBtn) closeBtn.addEventListener("click", closeNav);
+      if (backdrop) backdrop.addEventListener("click", closeNav);
+    }
+
+    // 加载导航
+    fetch('../Nav/partials/nav.html')
+      .then(response => response.text())
+      .then(html => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        const headerContent = tempDiv.querySelector('header');
+        const mobileNavBackdrop = tempDiv.querySelector('#mobile-nav-backdrop');
+        const mobileNav = tempDiv.querySelector('#mobile-nav');
+        const footer = tempDiv.querySelector('footer');
+
+        if (headerContent) {
+          document.getElementById('nav-container').appendChild(headerContent);
+        }
+        if (mobileNavBackdrop) {
+          document.getElementById('nav-container').appendChild(mobileNavBackdrop);
+        }
+        if (mobileNav) {
+          document.getElementById('nav-container').appendChild(mobileNav);
+        }
+
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+        if (footerPlaceholder && footer) {
+          const footerClone = footer.cloneNode(true);
+          footerPlaceholder.replaceWith(footerClone);
+        }
+
+        const currentPath = window.location.pathname;
+        const isHomePage = false;
+
+        const logoLinks = document.querySelectorAll('.nav-logo-link');
+        const logoImgs = document.querySelectorAll('.nav-logo-img');
+        logoLinks.forEach(link => {
+          link.href = '../Home/index.html';
+        });
+        logoImgs.forEach(img => {
+          img.src = '../Home/logo.svg';
+        });
+
+        document.querySelectorAll('.nav-link-customized').forEach(link => {
+          link.href = '../Home/index.html#customized';
+        });
+          document.querySelectorAll('.nav-link-case-center').forEach(link => {
+            link.href = '../Case center/case center.html';
+          });
+        document.querySelectorAll('.nav-link-downloads').forEach(link => {
+          link.href = 'downloads.html';
+        });
+        document.querySelectorAll('.nav-link-contact').forEach(link => {
+          link.href = '../Home/index.html#contact';
+        });
+        document.querySelectorAll('.nav-link-company').forEach(link => {
+          link.href = '../About us/About us.html';
+        });
+
+        if (footerClone) {
+          document.querySelectorAll('footer .nav-link-customized').forEach(link => {
+            link.href = '../Home/index.html#customized';
+          });
+          document.querySelectorAll('footer .nav-link-downloads').forEach(link => {
+            link.href = 'downloads.html';
+          });
+          document.querySelectorAll('footer .nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+          document.querySelectorAll('footer .nav-link-contact').forEach(link => {
+            link.href = '../Home/index.html#contact';
+          });
+        }
+
+        initMobileNav();
+        const yearEl = document.getElementById('year');
+        if (yearEl) {
+          yearEl.textContent = new Date().getFullYear();
+        }
+        bindLangButtons();
+        setTimeout(() => {
+          let defaultLang = "zh";
+          try {
+            const stored = localStorage.getItem("site-lang");
+            if (stored && translations[stored]) defaultLang = stored;
+          } catch (e) {}
+          setLanguage(defaultLang);
+        }, 0);
+      })
+      .catch(error => {
+        console.error('加载导航失败:', error);
+      });
+  </script>
+</body>
+</html>
+
