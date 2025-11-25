@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>RunwayMaster · 产品手册下载中心</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="RunwayMaster 无人机产品手册与资料下载，按机型与型号快速筛选。">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .lang-toggle-btn {
+      border-radius: 999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #a1a1aa;
+    }
+    .lang-toggle-btn.active {
+      border-color: #f97316;
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.15);
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.show {
+      display: flex;
+    }
+    .modal-content {
+      background: #18181b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-black text-white flex flex-col">
+  <!-- 导航占位符 -->
+  <div id="nav-container"></div>
+
+  <!-- 导航加载脚本（与首页保持一致） -->
+  <script>
+    // 加载导航组件
+    fetch('../Nav/partials/nav.html')
+      .then(response => response.text())
+      .then(html => {
+        // 创建临时容器来解析 HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        
+        // 提取 header 和移动端导航
+        const header = tempDiv.querySelector('header');
+        const mobileNavBackdrop = tempDiv.querySelector('#mobile-nav-backdrop');
+        const mobileNav = tempDiv.querySelector('#mobile-nav');
+        
+        // 将 header 和移动端导航添加到 nav-container
+        const navContainer = document.getElementById('nav-container');
+        if (header) navContainer.appendChild(header);
+        if (mobileNavBackdrop) navContainer.appendChild(mobileNavBackdrop);
+        if (mobileNav) navContainer.appendChild(mobileNav);
+        
+        // 提取 footer 并添加到页面底部
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+        if (footerPlaceholder) {
+          const footer = tempDiv.querySelector('footer');
+          if (footer) {
+            // 克隆 footer 以避免重复引用问题
+            const footerClone = footer.cloneNode(true);
+            footerPlaceholder.replaceWith(footerClone);
+          }
+        }
+        
+        // 根据当前页面调整导航链接路径
+        const currentPath = window.location.pathname;
+        const isHomePage = currentPath.includes('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Home/');
+        
+        // 更新 logo 和链接路径
+        const logoLinks = document.querySelectorAll('.nav-logo-link');
+        const logoImgs = document.querySelectorAll('.nav-logo-img');
+        logoLinks.forEach(link => {
+          link.href = isHomePage ? 'index.html' : '../Home/index.html';
+        });
+        logoImgs.forEach(img => {
+          img.src = isHomePage ? 'logo.svg' : '../Home/logo.svg';
+        });
+        
+        // 更新导航链接
+        if (isHomePage) {
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+        } else {
+          document.querySelectorAll('.nav-link-customized').forEach(link => {
+            link.href = '../Home/index.html#customized';
+          });
+          document.querySelectorAll('.nav-link-case-center').forEach(link => {
+            link.href = '../Case center/case center.html';
+          });
+          document.querySelectorAll('.nav-link-downloads').forEach(link => {
+            link.href = 'downloads.html';
+          });
+          document.querySelectorAll('.nav-link-contact').forEach(link => {
+            link.href = '../Home/index.html#contact';
+          });
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = 'About us.html';
+          });
+        }
+        
+        // 更新底部导航链接
+        if (isHomePage) {
+          document.querySelectorAll('footer .nav-link-customized').forEach(link => {
+            link.href = '#customized';
+          });
+          document.querySelectorAll('footer .nav-link-downloads').forEach(link => {
+            link.href = '#downloads';
+          });
+          document.querySelectorAll('footer .nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+          document.querySelectorAll('footer .nav-link-contact').forEach(link => {
+            link.href = '#contact';
+          });
+        } else {
+          document.querySelectorAll('footer .nav-link-customized').forEach(link => {
+            link.href = '../Home/index.html#customized';
+          });
+          document.querySelectorAll('footer .nav-link-downloads').forEach(link => {
+            link.href = 'downloads.html';
+          });
+          document.querySelectorAll('footer .nav-link-company').forEach(link => {
+            link.href = 'About us.html';
+          });
+          document.querySelectorAll('footer .nav-link-contact').forEach(link => {
+            link.href = '../Home/index.html#contact';
+          });
+        }
+        
+        // 初始化移动端导航功能
+        initMobileNav();
+        
+        // 初始化年份（在 footer 加载后）
+        setTimeout(() => {
+          const yearEl = document.getElementById('year');
+          if (yearEl) {
+            yearEl.textContent = new Date().getFullYear();
+          }
+        }, 100);
+        
+        // 绑定导航中的语言切换按钮
+        bindLangButtons();
+      })
+      .catch(error => {
+        console.error('加载导航失败:', error);
+      });
+    
+    function bindLangButtons() {
+      document.addEventListener("click", function(e) {
+        const btn = e.target.closest("[data-lang-btn]");
+        if (btn) {
+          e.preventDefault();
+          const lang = btn.getAttribute("data-lang-btn");
+          setLanguage(lang);
+        }
+      });
+    }
+    
+    function initMobileNav() {
+      const mobileNav = document.getElementById("mobile-nav");
+      const mobileBackdrop = document.getElementById("mobile-nav-backdrop");
+      const mobileOpenBtn = document.getElementById("mobile-nav-open");
+      const mobileCloseBtn = document.getElementById("mobile-nav-close");
+      const mobileNavLinks = mobileNav ? mobileNav.querySelectorAll("[data-mobile-nav-link]") : [];
+
+      function setMobileNav(open) {
+        if (!mobileNav || !mobileBackdrop) return;
+        mobileNav.classList.toggle("-translate-x-full", !open);
+        mobileNav.setAttribute("aria-hidden", (!open).toString());
+        mobileBackdrop.classList.toggle("opacity-100", open);
+        mobileBackdrop.classList.toggle("pointer-events-auto", open);
+      }
+
+      [mobileOpenBtn, mobileCloseBtn].forEach(btn => {
+        if (!btn) return;
+        btn.addEventListener("click", () => setMobileNav(btn === mobileOpenBtn));
+      });
+
+      if (mobileBackdrop) {
+        mobileBackdrop.addEventListener("click", () => setMobileNav(false));
+      }
+
+      mobileNavLinks.forEach(link => {
+        link.addEventListener("click", () => setMobileNav(false));
+      });
+
+      const mq = window.matchMedia("(min-width: 768px)");
+      if (mq && mq.addEventListener) {
+        mq.addEventListener("change", e => {
+          if (e.matches) setMobileNav(false);
+        });
+      }
+    }
+  </script>
+
+  <!-- 主体内容 -->
+  <main class="pt-20 md:pt-24">
+
+    <!-- 第一级：全宽工厂视频 Banner -->
+    <section class="mb-10 md:mb-12">
+      <div class="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-black">
+        <div class="relative max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+          <div class="relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 mt-2 md:mt-4">
+            <div class="relative h-[240px] sm:h-[320px] md:h-[420px] lg:h-[480px]">
+              <!-- VIDEO SLOT: 替换 src / poster 为你的工厂展示视频 -->
+              <video
+                class="w-full h-full object-cover"
+                autoplay
+                muted
+                loop
+                playsinline
+                poster="downloads-hero.jpg"
+              >
+                <source src="../Home/zongzhuang.mp4" type="video/mp4" />
+              </video>
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/10"></div>
+
+              <div class="absolute inset-0 flex items-end md:items-center">
+                <div class="w-full md:w-3/4 lg:w-2/3 p-5 md:p-8 lg:p-10 space-y-4 md:space-y-5">
+                  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 border border-zinc-700 text-[10px] md:text-xs text-zinc-200 backdrop-blur">
+                    <span class="h-1.5 w-1.5 rounded-full bg-orange-400 animate-pulse"></span>
+                    <span data-i18n-key="downloads.hero.badge"></span>
+                  </div>
+
+                  <h1 class="text-xl md:text-3xl lg:text-4xl font-semibold tracking-tight leading-tight">
+                    <span data-i18n-key="downloads.hero.title"></span>
+                  </h1>
+
+                  <p class="text-xs md:text-sm text-zinc-200 max-w-xl leading-relaxed" data-i18n-key="downloads.hero.desc"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 第二级：筛选条（机型 + 型号） -->
+    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 mb-10 md:mb-12">
+      <div class="rounded-3xl border border-zinc-800 bg-zinc-950/80 p-4 md:p-6 lg:p-7 backdrop-blur">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 mb-4 md:mb-5">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-orange-300 mb-1" data-i18n-key="downloads.filter.title"></p>
+            <p class="text-xs md:text-sm text-zinc-400" data-i18n-key="downloads.filter.desc"></p>
+          </div>
+          <button
+            id="filter-reset"
+            type="button"
+            class="self-start md:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-700 text-[10px] md:text-xs text-zinc-200 hover:border-orange-400 hover:text-orange-200 transition"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M4 4l16 16M4 20L20 4" stroke-linecap="round" />
+            </svg>
+            <span data-i18n-key="downloads.filter.reset"></span>
+          </button>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <!-- 机型选择 -->
+          <div>
+            <label class="flex items-center gap-2 text-[11px] md:text-xs text-zinc-400 mb-1.5">
+              <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-700 text-[10px]">1</span>
+              <span data-i18n-key="downloads.filter.type.label">无人机机型</span>
+            </label>
+            <div class="relative">
+              <select
+                id="filter-series"
+                class="w-full appearance-none rounded-2xl border border-zinc-700 bg-black/60 px-3.5 py-2.5 text-xs md:text-sm text-zinc-100 focus:outline-none focus:border-orange-400"
+              >
+                <option value="" data-i18n-key="downloads.filter.type.all">全部机型</option>
+                <option value="fpv" data-i18n-key="downloads.filter.type.fpv">FPV</option>
+                <option value="industrial" data-i18n-key="downloads.filter.type.industrial">工业无人机</option>
+                <option value="anti" data-i18n-key="downloads.filter.type.anti">反无人机</option>
+                <option value="accessories" data-i18n-key="downloads.filter.type.accessories">配件</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-zinc-500">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- 型号选择 -->
+          <div>
+            <label class="flex items-center gap-2 text-[11px] md:text-xs text-zinc-400 mb-1.5">
+              <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-700 text-[10px]">2</span>
+              <span data-i18n-key="downloads.filter.model.label">具体型号</span>
+            </label>
+            <div class="relative">
+              <select
+                id="filter-model"
+                class="w-full appearance-none rounded-2xl border border-zinc-700 bg-black/60 px-3.5 py-2.5 text-xs md:text-sm text-zinc-100 focus:outline-none focus:border-orange-400"
+              >
+                <option value="" data-i18n-key="downloads.filter.model.all">全部型号</option>
+                <option value="amav15" data-i18n-key="downloads.filter.model.amav15">Amav 15</option>
+                <option value="evo-max" data-i18n-key="downloads.filter.model.evoMax">EVO Max</option>
+                <option value="rm-vt" data-i18n-key="downloads.filter.model.rmvt">RM-VT</option>
+                <option value="inspection-quad" data-i18n-key="downloads.filter.model.inspection">巡检四旋翼</option>
+                <option value="agri-sprayer" data-i18n-key="downloads.filter.model.agri">农业喷洒机</option>
+                <option value="anti-station" data-i18n-key="downloads.filter.model.antiStation">反无人机站</option>
+                <option value="link-kit" data-i18n-key="downloads.filter.model.linkKit">高清图传套件</option>
+                <option value="gcs" data-i18n-key="downloads.filter.model.gcs">地面控制站</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-zinc-500">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 下载列表：按 FPV / 工业 / 反无人机 / 配件 四大块平铺 -->
+    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pb-12 md:pb-16 space-y-14 md:space-y-20">
+
+      <!-- FPV -->
+      <section>
+        <div class="flex items-center gap-3 mb-6">
+          <h2 class="flex-1 text-left text-base md:text-lg font-semibold tracking-[0.18em] uppercase text-zinc-100" data-i18n-key="downloads.category.fpv"></h2>
+          <!-- 展开更多按钮 -->
+          <button
+            type="button"
+            class="shrink-0 inline-flex items-center gap-1.5 text-[11px] md:text-xs text-zinc-400 hover:text-orange-300 transition"
+          >
+            <span data-i18n-key="downloads.more"></span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="grid gap-4 md:gap-5 md:grid-cols-3">
+          <!-- 卡片 1 -->
+          <article
+            data-download-card
+            data-series="fpv"
+            data-model="amav15"
+            data-has-page="true"
+            data-page-url="downloads/amav15.html"
+            data-pdf-url="docs/amav15.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 hover:shadow-lg hover:shadow-orange-500/20 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/amav 15.png" alt="Amav 15 FPV" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">Amav 15 · Quick Start Guide</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Dual-language quick start manual for the 15&quot; heavy-lift FPV platform.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="docs/amav15.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- 卡片 2（Spec 标签已删除） -->
+          <article
+            data-download-card
+            data-series="fpv"
+            data-model="freestyle-5"
+            data-has-page="false"
+            data-pdf-url="pdfs/freestyle-5-specs.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 hover:shadow-lg hover:shadow-orange-500/20 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/amav 15.png" alt="5-inch Freestyle Frame" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">5&quot; Freestyle Frame · Specs</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Dimension drawing, weight and recommended build list for freestyle FPV users.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/lr-fpv-manual.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- 卡片 3（标题右上的 PDF 标签已删除） -->
+          <article
+            data-download-card
+            data-series="fpv"
+            data-model="lr-fpv"
+            data-has-page="false"
+            data-pdf-url="pdfs/lr-fpv-manual.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 hover:shadow-lg hover:shadow-orange-500/20 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/amav 15.png" alt="Long-range FPV Platform" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">Long-range FPV · System Brochure</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Marketing brochure for long-range FPV platform including link budget and use cases.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/freestyle-5-specs.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Industrial drone -->
+      <section>
+        <div class="flex items-center gap-3 mb-6">
+          <h2 class="flex-1 text-left text-base md:text-lg font-semibold tracking-[0.18em] uppercase text-zinc-100" data-i18n-key="downloads.category.industrial"></h2>
+          <button
+            type="button"
+            class="shrink-0 inline-flex items-center gap-1.5 text-[11px] md:text-xs text-zinc-400 hover:text-orange-300 transition"
+          >
+            <span data-i18n-key="downloads.more"></span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="grid gap-4 md:gap-5 md:grid-cols-3">
+          <!-- 卡片 1（标题右上的 PDF 标签已删除） -->
+          <article
+            data-download-card
+            data-series="industrial"
+            data-model="evo-max"
+            data-has-page="true"
+            data-page-url="evo-max.html"
+            data-pdf-url="pdfs/evo-max-manual.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/daotong.png" alt="EVO Max" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">EVO Max · User Manual</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Complete user manual for EVO Max industry multirotor platform.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/rm-vt-mapping-guide.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- 卡片 2 -->
+          <article
+            data-download-card
+            data-series="industrial"
+            data-model="rm-vt"
+            data-has-page="false"
+            data-pdf-url="pdfs/rm-vt-mapping-guide.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/fanwurenji.png" alt="RM-VT VTOL" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">RM-VT · Mapping Payload Guide</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Integration guide for mapping payloads on RM-VT VTOL platform.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/agri-sprayer-manual.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- 卡片 3 -->
+          <article
+            data-download-card
+            data-series="industrial"
+            data-model="agri-sprayer"
+            data-has-page="false"
+            data-pdf-url="pdfs/agri-sprayer-manual.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/daotong.png" alt="Agriculture Sprayer" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">Agriculture Sprayer · Operation Manual</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Safety instructions and daily operation procedures for agri spraying drone.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/freestyle-5-specs.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Anti-Drone -->
+      <section>
+        <div class="flex items-center gap-3 mb-6">
+          <h2 class="flex-1 text-left text-base md:text-lg font-semibold tracking-[0.18em] uppercase text-zinc-100" data-i18n-key="downloads.category.anti"></h2>
+          <button
+            type="button"
+            class="shrink-0 inline-flex items-center gap-1.5 text-[11px] md:text-xs text-zinc-400 hover:text-orange-300 transition"
+          >
+            <span data-i18n-key="downloads.more"></span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="grid gap-4 md:gap-5 md:grid-cols-3">
+          <!-- 卡片 1 -->
+          <article
+            data-download-card
+            data-series="anti"
+            data-model="anti-portable"
+            data-has-page="false"
+            data-pdf-url="pdfs/anti-portable-manual.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/fanwurenji.png" alt="Portable Anti-drone" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">Portable Anti-drone · Data Sheet</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                RF bands, power levels and coverage specs for portable anti-drone system.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/anti-station-manual.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- 卡片 2 -->
+          <article
+            data-download-card
+            data-series="anti"
+            data-model="anti-station"
+            data-has-page="false"
+            data-pdf-url="pdfs/anti-station-manual.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/fanwurenji.png" alt="Fixed Anti-drone Station" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">Anti-drone Station · System Manual</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Installation and maintenance guide for fixed anti-drone station.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/anti-radar-manual.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- 卡片 3 -->
+          <article
+            data-download-card
+            data-series="anti"
+            data-model="anti-radar"
+            data-has-page="false"
+            data-pdf-url="pdfs/anti-radar-manual.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/fanwurenji.png" alt="Radar Integration" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">Radar Integration · Interface Guide</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Integration guide for radar + EO/IR anti-drone solution.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/freestyle-5-specs.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Accessories -->
+      <section>
+        <div class="flex items-center gap-3 mb-6">
+          <h2 class="flex-1 text-left text-base md:text-lg font-semibold tracking-[0.18em] uppercase text-zinc-100" data-i18n-key="downloads.category.accessories"></h2>
+          <button
+            type="button"
+            class="shrink-0 inline-flex items-center gap-1.5 text-[11px] md:text-xs text-zinc-400 hover:text-orange-300 transition"
+          >
+            <span data-i18n-key="downloads.more"></span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="grid gap-4 md:gap-5 md:grid-cols-3">
+          <!-- 卡片 1 -->
+          <article
+            data-download-card
+            data-series="accessories"
+            data-model="link-kit"
+            data-has-page="false"
+            data-pdf-url="pdfs/link-kit-manual.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/daotong.png" alt="HD Link Kit" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">HD Video Link Kit · Spec Sheet</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Wireless link specs and pinout for HD video transmission kit.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/smart-battery-manual.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- 卡片 2 -->
+          <article
+            data-download-card
+            data-series="accessories"
+            data-model="smart-battery"
+            data-has-page="false"
+            data-pdf-url="pdfs/smart-battery-manual.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/daotong.png" alt="Smart Battery" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">Smart Battery · Safety Manual</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Charging, storage and transportation requirements for smart battery packs.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/gcs-manual.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- 卡片 3 -->
+          <article
+            data-download-card
+            data-series="accessories"
+            data-model="gcs"
+            data-has-page="false"
+            data-pdf-url="pdfs/gcs-manual.pdf"
+            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
+          >
+            <div class="aspect-video bg-black overflow-hidden">
+              <img src="../Home/daotong.png" alt="Ground Control Station" class="w-full h-full object-cover">
+            </div>
+            <div class="p-3.5 md:p-4 text-xs md:text-sm">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <p class="font-medium">Ground Control Station · Software Manual</p>
+              </div>
+              <p class="text-zinc-400 mb-3">
+                Software manual for GCS with mission planning and fleet management.
+              </p>
+              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
+                <button
+                  type="button"
+                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
+                  data-pdf-url="pdfs/freestyle-5-specs.pdf"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>PDF</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- 联系信息 -->
+    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 text-center">
+      <p class="text-xs md:text-sm text-zinc-300">
+        <span data-i18n-key="downloads.contact.label">商务合作邮箱：</span>
+        <a href="mailto:linxiaofenghe@gmail.com" class="text-orange-300 hover:text-orange-200 underline underline-offset-4">
+          linxiaofenghe@gmail.com
+        </a>
+      </p>
+    </section>
+
+  </main>
+
+  <!-- 底部导航占位符 -->
+  <div id="footer-placeholder"></div>
+
+  <!-- PDF 下载提示模态框 -->
+  <div id="pdf-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <p class="text-sm text-zinc-300 mb-6" data-i18n-key="downloads.modal.message">此资料为 PDF 文件，请直接下载查看</p>
+      <div class="flex items-center gap-3 justify-center">
+        <!-- 下载按钮：使用首页橙色按钮风格 -->
+        <button
+          id="modal-download-btn"
+          class="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5 rounded-full bg-orange-500 text-black text-xs md:text-sm font-semibold shadow-lg shadow-orange-500/40 hover:bg-orange-400 transition active:scale-[0.98]"
+        >
+          <svg class="w-3.5 h-3.5 md:w-4 md:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span>PDF</span>
+        </button>
+        <!-- 关闭按钮：使用首页灰色边框按钮风格 -->
+        <button
+          id="modal-close-btn"
+          class="px-5 md:px-6 py-3 rounded-full border border-zinc-700 bg-zinc-900 text-xs md:text-sm text-zinc-200 hover:border-orange-400 hover:text-orange-200 transition"
+          data-i18n-key="downloads.modal.close"
+        >
+          关闭
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 简单的前端筛选逻辑和卡片交互 -->
+  <script>
+    // PDF 下载函数
+    function downloadPDF(pdfUrl) {
+      if (pdfUrl) {
+        // 创建临时链接并触发下载
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = pdfUrl.split('/').pop();
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+
+    // 显示 PDF 提示模态框
+    function showPDFModal(pdfUrl) {
+      const modal = document.getElementById('pdf-modal');
+      const downloadBtn = document.getElementById('modal-download-btn');
+      
+      if (modal && downloadBtn) {
+        downloadBtn.onclick = () => {
+          downloadPDF(pdfUrl);
+          hidePDFModal();
+        };
+        modal.classList.add('show');
+      }
+    }
+
+    // 隐藏 PDF 提示模态框
+    function hidePDFModal() {
+      const modal = document.getElementById('pdf-modal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const seriesSelect = document.getElementById("filter-series");
+      const modelSelect = document.getElementById("filter-model");
+      const resetBtn = document.getElementById("filter-reset");
+      const cards = document.querySelectorAll("[data-download-card]");
+      const modalCloseBtn = document.getElementById('modal-close-btn');
+      const modal = document.getElementById('pdf-modal');
+
+      // 卡片点击事件
+      cards.forEach(card => {
+        // 阻止 PDF 按钮的点击事件冒泡
+        const pdfBtn = card.querySelector('.download-pdf-btn');
+        if (pdfBtn) {
+          pdfBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const pdfUrl = pdfBtn.getAttribute('data-pdf-url') || card.getAttribute('data-pdf-url');
+            downloadPDF(pdfUrl);
+          });
+        }
+
+        // 卡片主体点击事件
+        card.addEventListener('click', (e) => {
+          // 如果点击的是 PDF 按钮，不处理
+          if (e.target.closest('.download-pdf-btn')) {
+            return;
+          }
+
+          const hasPage = card.getAttribute('data-has-page') === 'true';
+          const pageUrl = card.getAttribute('data-page-url');
+          const pdfUrl = card.getAttribute('data-pdf-url');
+
+          if (hasPage && pageUrl) {
+            // 有二级页面，跳转
+            window.location.href = pageUrl;
+          } else if (pdfUrl) {
+            // 没有二级页面，显示提示模态框
+            showPDFModal(pdfUrl);
+          }
+        });
+      });
+
+      // 关闭模态框
+      if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', hidePDFModal);
+      }
+
+      // 点击模态框背景关闭
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            hidePDFModal();
+          }
+        });
+      }
+
+      function applyFilters() {
+        const series = seriesSelect ? seriesSelect.value : "";
+        const model = modelSelect ? modelSelect.value : "";
+        cards.forEach(card => {
+          const cardSeries = card.getAttribute("data-series") || "";
+          const cardModel = card.getAttribute("data-model") || "";
+          const seriesMatch = !series || cardSeries === series;
+          const modelMatch = !model || cardModel === model;
+          card.classList.toggle("hidden", !(seriesMatch && modelMatch));
+        });
+      }
+
+      if (seriesSelect) seriesSelect.addEventListener("change", applyFilters);
+      if (modelSelect) modelSelect.addEventListener("change", applyFilters);
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          if (seriesSelect) seriesSelect.value = "";
+          if (modelSelect) modelSelect.value = "";
+          applyFilters();
+        });
+      }
+
+      applyFilters();
+    });
+  </script>
+
+  <!-- 多语言配置 -->
+  <script>
+    const translations = {
+      zh: {
+        "page.title": "RunwayMaster · 产品手册下载中心",
+
+        "nav.customized": "定制化",
+        "nav.caseCenter": "案例中心",
+        "nav.downloads": "下载中心",
+        "nav.company": "关于我们",
+        "nav.contact": "联系我们",
+        "nav.rfq": "联系我们",
+
+        "footer.nav.customized": "Customized",
+        "footer.nav.download": "Download",
+        "footer.nav.company": "Company",
+        "footer.nav.contact": "Contact",
+        "footer.rights": "保留所有权利。",
+
+        "downloads.hero.badge": "Download Center · 产品手册",
+        "downloads.hero.title": "无人机产品手册 & 资料下载",
+        "downloads.hero.desc": "按机型和具体型号快速筛选，获取最新规格书、说明书和宣传资料。",
+
+        "downloads.filter.title": "筛选",
+        "downloads.filter.desc": "先选择无人机机型，再选择具体型号，列表会仅展示相关文件。",
+        "downloads.filter.reset": "清空筛选",
+
+        "downloads.category.fpv": "FPV",
+        "downloads.category.industrial": "Industrial Drone",
+        "downloads.category.anti": "Anti-Drone",
+        "downloads.category.accessories": "Accessories",
+
+        "downloads.more": "展开更多",
+        "downloads.tag.manual": "说明书",
+        "downloads.tag.brochure": "产品册",
+        "downloads.tag.quickstart": "快速上手",
+        "downloads.btn.download": "下载",
+        "downloads.modal.message": "此资料为 PDF 文件，请直接下载查看",
+        "downloads.modal.download": "下载 PDF",
+        "downloads.modal.close": "关闭",
+        "downloads.contact.label": "商务合作邮箱：",
+        "downloads.filter.type.label": "无人机机型",
+        "downloads.filter.type.all": "全部机型",
+        "downloads.filter.type.fpv": "FPV",
+        "downloads.filter.type.industrial": "工业无人机",
+        "downloads.filter.type.anti": "反无人机",
+        "downloads.filter.type.accessories": "配件",
+        "downloads.filter.model.label": "具体型号",
+        "downloads.filter.model.all": "全部型号",
+        "downloads.filter.model.amav15": "Amav 15",
+        "downloads.filter.model.evoMax": "EVO Max",
+        "downloads.filter.model.rmvt": "RM-VT",
+        "downloads.filter.model.inspection": "巡检四旋翼",
+        "downloads.filter.model.agri": "农业喷洒机",
+        "downloads.filter.model.antiStation": "反无人机站",
+        "downloads.filter.model.linkKit": "高清图传套件",
+        "downloads.filter.model.gcs": "地面控制站"
+      },
+
+      en: {
+        "page.title": "RunwayMaster · Download Center",
+
+        "nav.customized": "CUSTOMIZED",
+        "nav.caseCenter": "CASE CENTER",
+        "nav.downloads": "DOWNLOADS",
+        "nav.company": "ABOUT US",
+        "nav.contact": "CONTACT",
+        "nav.rfq": "RFQ",
+
+        "footer.nav.customized": "Customized",
+        "footer.nav.download": "Download",
+        "footer.nav.company": "Company",
+        "footer.nav.contact": "Contact",
+        "footer.rights": "All rights reserved.",
+
+        "downloads.hero.badge": "Download Center · Documents",
+        "downloads.hero.title": "UAV Manuals & Brochures",
+        "downloads.hero.desc": "Filter by drone type and model to quickly find the latest manuals and marketing materials.",
+
+        "downloads.filter.title": "Filters",
+        "downloads.filter.desc": "Select a drone type and model to narrow down the document list.",
+        "downloads.filter.reset": "Clear filters",
+
+        "downloads.category.fpv": "FPV",
+        "downloads.category.industrial": "Industrial Drone",
+        "downloads.category.anti": "Anti-Drone",
+        "downloads.category.accessories": "Accessories",
+
+        "downloads.more": "View more",
+        "downloads.tag.manual": "Manual",
+        "downloads.tag.brochure": "Brochure",
+        "downloads.tag.quickstart": "Quick start",
+        "downloads.btn.download": "Download",
+        "downloads.modal.message": "This material is a PDF file, please download directly to view",
+        "downloads.modal.download": "Download PDF",
+        "downloads.modal.close": "Close",
+        "downloads.contact.label": "Business contact email: ",
+        "downloads.filter.type.label": "Drone Type",
+        "downloads.filter.type.all": "All Types",
+        "downloads.filter.type.fpv": "FPV",
+        "downloads.filter.type.industrial": "Industrial Drone",
+        "downloads.filter.type.anti": "Anti-Drone",
+        "downloads.filter.type.accessories": "Accessories",
+        "downloads.filter.model.label": "Model",
+        "downloads.filter.model.all": "All Models",
+        "downloads.filter.model.amav15": "Amav 15",
+        "downloads.filter.model.evoMax": "EVO Max",
+        "downloads.filter.model.rmvt": "RM-VT",
+        "downloads.filter.model.inspection": "Inspection Quad",
+        "downloads.filter.model.agri": "Agri Sprayer",
+        "downloads.filter.model.antiStation": "Anti-drone Station",
+        "downloads.filter.model.linkKit": "HD Link Kit",
+        "downloads.filter.model.gcs": "Ground Control Station"
+      }
+    };
+
+    function setLanguage(lang) {
+      const dict = translations[lang] || translations["zh"];
+
+      document.documentElement.setAttribute("data-lang", lang);
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+
+      if (dict["page.title"]) {
+        document.title = dict["page.title"];
+      }
+
+      document.querySelectorAll("[data-i18n-key]").forEach(el => {
+        const key = el.getAttribute("data-i18n-key");
+        const text = dict[key];
+        if (typeof text === "string") {
+          const span = el.querySelector("span");
+          if (span) {
+            span.textContent = text;
+          } else if (el.tagName === "OPTION") {
+            // 对于 option 元素，更新文本内容
+            el.textContent = text;
+          } else {
+            el.textContent = text;
+          }
+        }
+      });
+      
+      // 更新所有 select 中的 option（确保选项文本正确更新）
+      document.querySelectorAll("select option[data-i18n-key]").forEach(option => {
+        const key = option.getAttribute("data-i18n-key");
+        const text = dict[key];
+        if (typeof text === "string") {
+          option.textContent = text;
+        }
+      });
+
+      const navContainer = document.getElementById('nav-container');
+      if (navContainer) {
+        navContainer.querySelectorAll("[data-i18n-key]").forEach(el => {
+          const key = el.getAttribute("data-i18n-key");
+          const text = dict[key];
+          if (typeof text === "string") {
+            const span = el.querySelector("span");
+            if (span) {
+              span.textContent = text;
+            } else {
+              el.textContent = text;
+            }
+          }
+        });
+
+        navContainer.querySelectorAll("[data-lang-btn]").forEach(btn => {
+          const btnLang = btn.getAttribute("data-lang-btn");
+          btn.classList.toggle("active", btnLang === lang);
+        });
+      }
+
+      document.querySelectorAll("[data-lang-btn]").forEach(btn => {
+        const btnLang = btn.getAttribute("data-lang-btn");
+        btn.classList.toggle("active", btnLang === lang);
+      });
+
+      try {
+        localStorage.setItem("site-lang", lang);
+      } catch (e) {}
+    }
+
+    document.querySelectorAll("[data-lang-btn]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const lang = btn.getAttribute("data-lang-btn");
+        setLanguage(lang);
+      });
+    });
+
+    (function initLang() {
+      let defaultLang = "zh";
+      try {
+        const stored = localStorage.getItem("site-lang");
+        if (stored && translations[stored]) defaultLang = stored;
+      } catch (e) {}
+      setLanguage(defaultLang);
+    })();
+  </script>
+</body>
+</html>

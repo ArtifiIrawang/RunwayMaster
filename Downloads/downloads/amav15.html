@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Amav 15 · 产品详情</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Amav 15 无人机产品详情与技术参数。">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-black text-white flex flex-col">
+  <!-- 导航占位符 -->
+  <div id="nav-container"></div>
+
+  <!-- 复用现有 nav（路径按你项目里的为准） -->
+  <script>
+    fetch('../../Nav/partials/nav.html')
+      .then(r => r.text())
+      .then(html => {
+        // 创建临时容器来解析 HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        // 提取 header 和移动端导航
+        const headerContent = tempDiv.querySelector('header');
+        const mobileNavBackdrop = tempDiv.querySelector('#mobile-nav-backdrop');
+        const mobileNav = tempDiv.querySelector('#mobile-nav');
+        const footer = tempDiv.querySelector('footer');
+
+        // 将 header 和 mobile nav 添加到 nav-container
+        if (headerContent) {
+          document.getElementById('nav-container').appendChild(headerContent);
+        }
+        if (mobileNavBackdrop) {
+          document.getElementById('nav-container').appendChild(mobileNavBackdrop);
+        }
+        if (mobileNav) {
+          document.getElementById('nav-container').appendChild(mobileNav);
+        }
+
+        // 将 footer 添加到 footer-placeholder
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+        if (footerPlaceholder && footer) {
+          const footerClone = footer.cloneNode(true);
+          footerPlaceholder.replaceWith(footerClone);
+        }
+
+        const currentPath = window.location.pathname;
+        const isHomePage = currentPath.includes('index.html')
+          || currentPath.endsWith('/')
+          || currentPath.endsWith('/Home/');
+
+        const logoLinks = document.querySelectorAll('.nav-logo-link');
+        const logoImgs = document.querySelectorAll('.nav-logo-img');
+        logoLinks.forEach(link => {
+          link.href = isHomePage ? 'index.html' : '../../Home/index.html';
+        });
+        logoImgs.forEach(img => {
+          img.src = isHomePage ? 'logo.svg' : '../../Home/logo.svg';
+        });
+
+        if (isHomePage) {
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = '../About us/About us.html';
+          });
+        } else {
+          document.querySelectorAll('.nav-link-customized').forEach(link => {
+            link.href = '../../Home/index.html#customized';
+          });
+          document.querySelectorAll('.nav-link-case-center').forEach(link => {
+            link.href = '../../Case center/case center.html';
+          });
+          document.querySelectorAll('.nav-link-downloads').forEach(link => {
+            link.href = '../downloads.html';
+          });
+          document.querySelectorAll('.nav-link-contact').forEach(link => {
+            link.href = '../../Home/index.html#contact';
+          });
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = '../../About us/About us.html';
+          });
+        }
+
+        function initMobileNav() {
+          const mobileNav = document.getElementById("mobile-nav");
+          const mobileBackdrop = document.getElementById("mobile-nav-backdrop");
+          const mobileOpenBtn = document.getElementById("mobile-nav-open");
+          const mobileCloseBtn = document.getElementById("mobile-nav-close");
+          const mobileNavLinks = mobileNav ? mobileNav.querySelectorAll("[data-mobile-nav-link]") : [];
+
+          function setMobileNav(open) {
+            if (!mobileNav || !mobileBackdrop) return;
+            mobileNav.classList.toggle("-translate-x-full", !open);
+            mobileNav.setAttribute("aria-hidden", (!open).toString());
+            mobileBackdrop.classList.toggle("opacity-100", open);
+            mobileBackdrop.classList.toggle("pointer-events-auto", open);
+          }
+
+          [mobileOpenBtn, mobileCloseBtn].forEach(btn => {
+            if (!btn) return;
+            btn.addEventListener("click", () => setMobileNav(btn === mobileOpenBtn));
+          });
+
+          if (mobileBackdrop) {
+            mobileBackdrop.addEventListener("click", () => setMobileNav(false));
+          }
+
+          mobileNavLinks.forEach(link => {
+            link.addEventListener("click", () => setMobileNav(false));
+          });
+
+          const mq = window.matchMedia("(min-width: 768px)");
+          if (mq && mq.addEventListener) {
+            mq.addEventListener("change", e => {
+              if (e.matches) setMobileNav(false);
+            });
+          }
+        }
+
+        initMobileNav();
+        
+        // 语言切换功能
+        function bindLangButtons() {
+          document.addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-lang-btn]");
+            if (btn) {
+              const lang = btn.getAttribute("data-lang-btn");
+              document.querySelectorAll("[data-lang-btn]").forEach(b => b.classList.remove("active"));
+              btn.classList.add("active");
+              try {
+                localStorage.setItem("site-lang", lang);
+              } catch (e) {}
+            }
+          });
+        }
+        
+        bindLangButtons();
+        
+        // 更新 footer 链接
+        const footerElement = document.querySelector('footer');
+        if (footerElement) {
+          document.querySelectorAll('footer .nav-link-customized').forEach(link => {
+            link.href = '../../Home/index.html#customized';
+          });
+          document.querySelectorAll('footer .nav-link-downloads').forEach(link => {
+            link.href = '../downloads.html';
+          });
+          document.querySelectorAll('footer .nav-link-company').forEach(link => {
+            link.href = '../../About us/About us.html';
+          });
+          document.querySelectorAll('footer .nav-link-contact').forEach(link => {
+            link.href = '../../Home/index.html#contact';
+          });
+          
+          const yearEl = document.getElementById('year');
+          if (yearEl) {
+            yearEl.textContent = new Date().getFullYear();
+          }
+        }
+      })
+      .catch(e => console.error('加载导航失败:', e));
+  </script>
+  
+  <style>
+    .lang-toggle-btn {
+      border-radius: 999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #a1a1aa;
+    }
+    .lang-toggle-btn.active {
+      border-color: #f97316;
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.15);
+    }
+  </style>
+
+  <main class="flex-1 pt-20 md:pt-24">
+
+    <!-- 1. 开屏满屏大图 + 产品名 + 按钮 -->
+    <section class="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] h-[80vh] md:h-screen">
+      <!-- 产品大图 -->
+      <img
+        src="../../Home/amav 15.png"
+        alt="Amav 15 产品大图"
+        class="w-full h-full object-cover"
+      />
+      <!-- 渐变遮罩 -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/10"></div>
+
+      <!-- 居中内容 -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center px-4 max-w-3xl">
+          <p class="text-xs md:text-sm tracking-[0.35em] uppercase text-orange-300 mb-4">
+            FPV PLATFORM
+          </p>
+          <h1 class="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-4 md:mb-6">
+            Amav 15 Heavy-Lift FPV
+          </h1>
+          <p class="text-sm md:text-base text-zinc-200 mb-6 md:mb-8">
+            15 英寸重载 FPV 平台 · 兼顾穿越手感与工业级可靠性。
+          </p>
+
+          <!-- 按钮：下载 icon + 产品手册 -->
+          <a
+            href="../docs/amav15.pdf"
+            download
+            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-sm font-medium text-black transition shadow-lg shadow-orange-500/30"
+          >
+            <!-- 下载 icon -->
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8">
+              <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>产品手册</span>
+            <span class="text-xs opacity-80">PDF</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 页面主体内容 -->
+    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-10 md:py-16 space-y-20 md:space-y-28">
+
+      <!-- 2. 居中：产品卖点标题 + 文案 -->
+      <section class="text-center max-w-3xl mx-auto">
+        <h2 class="text-xl md:text-2xl font-semibold tracking-[0.25em] uppercase mb-4">
+          产品卖点 / KEY HIGHLIGHTS
+        </h2>
+        <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+          Amav 15 针对远距离穿越与轻量级工业任务设计，大桨盘搭配高效电机，既保留 FPV 的灵活机动性，
+          又具备稳定载荷能力与长航时表现，适用于巡检、搜救、直播等多种场景。
+        </p>
+      </section>
+
+      <!-- 3. 单张产品图 -->
+      <section>
+        <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+          <img
+            src="../../Home/amav 15.png"
+            alt="Amav 15 产品展示图"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </section>
+
+      <!-- 4. 六块优势点 -->
+      <section>
+        <h3 class="text-lg md:text-xl font-semibold mb-4 md:mb-6">
+          产品优势
+        </h3>
+        <div class="grid gap-4 md:gap-5 md:grid-cols-3">
+          <!-- 6 个优势块，按需要修改标题和文案 -->
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2">重载 FPV 能力</p>
+            <p class="text-xs md:text-sm text-zinc-400">
+              支持多种云台与传感器挂载，在保持穿越机操控感的同时提供稳定视角。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2">模块化结构</p>
+            <p class="text-xs md:text-sm text-zinc-400">
+              机臂、机鼻、尾段快速拆装，便于运输与现场维修，降低停机时间。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2">长航时优化</p>
+            <p class="text-xs md:text-sm text-zinc-400">
+              大桨盘+高效动力系统，匹配智能电池，实现更长飞行时间。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2">工业级用料</p>
+            <p class="text-xs md:text-sm text-zinc-400">
+              碳纤维复合材料与航空级铝合金，兼顾刚性与轻量化。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2">开放接口</p>
+            <p class="text-xs md:text-sm text-zinc-400">
+              预留电源与数据接口，便于对接第三方图传、控制系统与传感器。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2">完整交付配套</p>
+            <p class="text-xs md:text-sm text-zinc-400">
+              提供地面站、图传、备件和培训服务，助力快速落地应用场景。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 5. 再一张产品图 -->
+      <section>
+        <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+          <img
+            src="../../Home/amav 15.png"
+            alt="Amav 15 细节展示"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </section>
+      <!-- 6. 图文左右排布（三段交替） -->
+      <section class="space-y-16 md:space-y-20">
+
+        <!-- 段 1：图左 · 文右 -->
+        <div class="grid gap-8 md:gap-10 md:grid-cols-2 items-center">
+          <!-- 左：图 -->
+          <div>
+            <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+              <img
+                src="../../Home/amav 15.png"
+                alt="Amav 15 场景展示 1"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+          <!-- 右：文案 -->
+          <div class="space-y-3 md:space-y-4">
+            <h3 class="text-lg md:text-xl font-semibold">
+              远距离穿越 · 稳定视角控制
+            </h3>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              通过大桨盘与高效动力系统，Amav 15 能够在更远距离保持充足余量，
+              配合高清图传，在城市边缘、山谷、海岸等复杂环境中依然维持稳定画面。
+            </p>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              精细调校的 PID 与结构布局，让飞手在高速飞行时仍能轻松完成精准的构图与机位控制。
+            </p>
+          </div>
+        </div>
+
+        <!-- 段 2：文左 · 图右 -->
+        <div class="grid gap-8 md:gap-10 md:grid-cols-2 items-center">
+          <!-- 左：文案 -->
+          <div class="order-2 md:order-1 space-y-3 md:space-y-4">
+            <h3 class="text-lg md:text-xl font-semibold">
+              工业任务 · 一机多用
+            </h3>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              机身预留多组电源与数据接口，可挂载云台相机、多光谱相机、探照灯、喊话器等载荷，
+              满足巡检、安防、应急等不同任务需求。
+            </p>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              通过可视化地面站，可对任务航线、兴趣点、拍摄逻辑进行统一规划，实现从娱乐级飞行到半工业级应用的平滑过渡。
+            </p>
+          </div>
+          <!-- 右：图 -->
+          <div class="order-1 md:order-2">
+            <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+              <img
+                src="../../Home/amav 15.png"
+                alt="Amav 15 场景展示 2"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- 段 3：图左 · 文右 -->
+        <div class="grid gap-8 md:gap-10 md:grid-cols-2 items-center">
+          <!-- 左：图 -->
+          <div>
+            <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+              <img
+                src="../../Home/amav 15.png"
+                alt="Amav 15 场景展示 3"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+          <!-- 右：文案 -->
+          <div class="space-y-3 md:space-y-4">
+            <h3 class="text-lg md:text-xl font-semibold">
+              易维护 · 易运输 · 易扩展
+            </h3>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              模块化机臂与卡扣结构让日常维护更简单，外出任务时可快速拆解装箱，减小体积与重量压力。
+            </p>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              通过开放的安装面与标准孔位，后续可以持续扩展新版本图传、飞控与载荷，无需更换整机平台。
+            </p>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- 7. 技术参数：表格左右排布 -->
+      <section>
+        <h3 class="text-lg md:text-xl font-semibold mb-4 md:mb-6">
+          技术参数 / TECHNICAL SPECIFICATIONS
+        </h3>
+
+        <div class="grid gap-6 md:gap-8 md:grid-cols-2">
+          <!-- 左：基础内容 -->
+          <div class="rounded-3xl border border-zinc-800 bg-zinc-950/80 p-4 md:p-6">
+            <h4 class="text-sm md:text-base font-medium mb-3 md:mb-4">
+              基础信息
+            </h4>
+            <table class="w-full text-xs md:text-sm text-zinc-300 border-separate border-spacing-y-1">
+              <tbody>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">机型</td>
+                  <td class="py-1.5">Amav 15 Heavy-Lift FPV</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">轴距</td>
+                  <td class="py-1.5">约 380 mm</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">机身重量</td>
+                  <td class="py-1.5">约 1.9 kg（不含电池与载荷）</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">最大起飞重量</td>
+                  <td class="py-1.5">≤ 4.5 kg（视动力与配置而定）</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">推荐桨叶尺寸</td>
+                  <td class="py-1.5">15 × 5.2 inch</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">机身材料</td>
+                  <td class="py-1.5">碳纤维复合材料 + 铝合金</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 右：具体参数 -->
+          <div class="rounded-3xl border border-zinc-800 bg-zinc-950/80 p-4 md:p-6">
+            <h4 class="text-sm md:text-base font-medium mb-3 md:mb-4">
+              性能与电气参数
+            </h4>
+            <table class="w-full text-xs md:text-sm text-zinc-300 border-separate border-spacing-y-1">
+              <tbody>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">供电电压</td>
+                  <td class="py-1.5">6S / 12S 智能电池（视版本而定）</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">悬停时间</td>
+                  <td class="py-1.5">约 18–25 分钟（典型载荷）</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">最大飞行速度</td>
+                  <td class="py-1.5">≥ 25 m/s（无风环境）</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">抗风能力</td>
+                  <td class="py-1.5">可达 10 m/s 侧风</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">工作温度</td>
+                  <td class="py-1.5">-10 ℃ ~ +45 ℃</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap">图传 / 控制</td>
+                  <td class="py-1.5">支持 HD 图传，兼容常见开放飞控与地面站</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 底部再给一个下载按钮 + 返回链接 -->
+        <div class="mt-8 md:mt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <a
+            href="../docs/amav15.pdf"
+            download
+            class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-orange-500/90 hover:bg-orange-400 text-xs md:text-sm font-medium text-black transition"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8">
+              <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>下载产品手册 PDF</span>
+          </a>
+
+          <a
+            href="../downloads.html"
+            class="text-xs md:text-sm text-zinc-400 hover:text-orange-300 transition"
+          >
+            ← 返回下载中心
+          </a>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- 底部导航占位符 -->
+  <div id="footer-placeholder"></div>
+</body>
+</html>
