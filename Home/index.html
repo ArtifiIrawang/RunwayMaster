@@ -595,7 +595,7 @@
 
         <form
         id="contact-form"
-        action="https://formsubmit.co/linxiaofenghe@gmail.com"
+        action="https://formsubmit.co/el/gupelu"
         method="POST"
         class="mt-4 max-w-md mx-auto flex flex-col sm:flex-row items-center gap-3"
       >
@@ -682,7 +682,7 @@
             // 先尝试正常模式（可以获取响应）
             let response;
             try {
-              response = await fetch('https://formsubmit.co/linxiaofenghe@gmail.com', {
+              response = await fetch('https://formsubmit.co/el/gupelu', {
                 method: 'POST',
                 body: formData
               });
@@ -696,7 +696,7 @@
             } catch (corsError) {
               // 如果 CORS 失败，使用 no-cors 模式
               console.log('CORS 失败，使用 no-cors 模式：', corsError.message);
-              response = await fetch('https://formsubmit.co/linxiaofenghe@gmail.com', {
+              response = await fetch('https://formsubmit.co/el/gupelu', {
                 method: 'POST',
                 mode: 'no-cors',
                 body: formData
