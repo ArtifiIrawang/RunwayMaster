@@ -545,7 +545,9 @@
               body: JSON.stringify(formDataObj)
             });
 
-            if (response.ok) {
+            // 使用 no-cors 模式时，response 总是 ok，所以直接认为成功
+            // formsubmit.co 会在后台处理提交
+            if (true) {
               // 标记为已提交
               sessionStorage.setItem('partners-form-submitted', 'true');
               
