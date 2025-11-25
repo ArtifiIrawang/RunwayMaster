@@ -319,6 +319,8 @@
           <input type="hidden" name="_subject" value="RunwayMaster About Us 页面表单提交" />
           <input type="hidden" name="_captcha" value="false" />
           <input type="hidden" name="_next" value="" />
+          <!-- 添加模板格式，使邮件更易读 -->
+          <input type="hidden" name="_template" value="table" />
 
           <!-- Mail -->
           <div>
@@ -528,21 +530,15 @@
           }
 
           const formData = new FormData(partnersForm);
+          // 添加 _next 参数避免页面跳转
+          formData.append('_next', window.location.href);
           
           try {
-            // 提交表单
-            const formDataObj = {};
-            formData.forEach((value, key) => {
-              formDataObj[key] = value;
-            });
-            
-            const response = await fetch('https://formsubmit.co/ajax/el/gofilo', {
+            // 提交表单到 formsubmit.co
+            const response = await fetch('https://formsubmit.co/el/gofilo', {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              body: JSON.stringify(formDataObj)
+              mode: 'no-cors', // 使用 no-cors 模式避免 CORS 问题
+              body: formData
             });
 
             // 使用 no-cors 模式时，response 总是 ok，所以直接认为成功
@@ -562,6 +558,9 @@
                   partnersSubmitText.textContent = currentLang === 'zh' ? '已提交' : 'Submitted';
                 }
               }
+              
+              // 提示用户（可选）
+              console.log('表单已提交，请检查您的邮箱（包括垃圾邮件文件夹）');
             }
           } catch (error) {
             console.error('表单提交失败:', error);
