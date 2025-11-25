@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>直接测试 FormSubmit</title>
+</head>
+<body>
+  <h1>直接测试 formsubmit.co/el/gofilo</h1>
+  <p>这个页面会直接提交表单，不使用 JavaScript</p>
+  
+  <form action="https://formsubmit.co/el/gofilo" method="POST">
+    <input type="hidden" name="_subject" value="直接测试 - FormSubmit" />
+    <input type="hidden" name="_captcha" value="false" />
+    <input type="hidden" name="_template" value="table" />
+    <input type="hidden" name="_next" value="https://www.google.com" />
+    
+    <label>测试邮箱：</label>
+    <input type="email" name="email" value="test@example.com" required />
+    
+    <button type="submit">直接提交（会跳转）</button>
+  </form>
+</body>
+</html>

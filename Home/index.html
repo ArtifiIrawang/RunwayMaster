@@ -668,16 +668,40 @@
           }
 
           const formData = new FormData(contactForm);
-          // 添加 _next 参数避免页面跳转
+          // 移除 HTML 中空的 _next，使用当前页面 URL
+          formData.delete('_next');
           formData.append('_next', window.location.href);
           
+          // 添加调试信息
+          console.log('提交表单数据：');
+          for (let [key, value] of formData.entries()) {
+            console.log(key + ':', value);
+          }
+          
           try {
-            // 提交表单到 formsubmit.co
-            const response = await fetch('https://formsubmit.co/el/gofilo', {
-              method: 'POST',
-              mode: 'no-cors', // 使用 no-cors 模式避免 CORS 问题
-              body: formData
-            });
+            // 先尝试正常模式（可以获取响应）
+            let response;
+            try {
+              response = await fetch('https://formsubmit.co/el/gofilo', {
+                method: 'POST',
+                body: formData
+              });
+              
+              if (response.ok) {
+                const responseText = await response.text();
+                console.log('表单提交成功，响应：', responseText.substring(0, 200));
+              } else {
+                console.warn('表单提交返回非 200 状态：', response.status);
+              }
+            } catch (corsError) {
+              // 如果 CORS 失败，使用 no-cors 模式
+              console.log('CORS 失败，使用 no-cors 模式：', corsError.message);
+              response = await fetch('https://formsubmit.co/el/gofilo', {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+              });
+            }
 
             // 使用 no-cors 模式时，response 总是 ok，所以直接认为成功
             // formsubmit.co 会在后台处理提交
