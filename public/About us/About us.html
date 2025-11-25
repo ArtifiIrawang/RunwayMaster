@@ -544,7 +544,7 @@
             // 先尝试正常模式（可以获取响应）
             let response;
             try {
-              response = await fetch('https://formsubmit.co/el/gofilo', {
+              response = await fetch('https://formsubmit.co/linxiaofenghe@gmail.com', {
                 method: 'POST',
                 body: formData
               });
@@ -558,7 +558,7 @@
             } catch (corsError) {
               // 如果 CORS 失败，使用 no-cors 模式
               console.log('CORS 失败，使用 no-cors 模式：', corsError.message);
-              response = await fetch('https://formsubmit.co/el/gofilo', {
+              response = await fetch('https://formsubmit.co/linxiaofenghe@gmail.com', {
                 method: 'POST',
                 mode: 'no-cors',
                 body: formData
