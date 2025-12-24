@@ -106,7 +106,7 @@
         
         // 根据当前页面调整导航链接路径
         const currentPath = window.location.pathname;
-        const isHomePage = false; // About us 页面
+        const isHomePage = false; // about-us 页面
         
         // 更新 logo 和链接路径
         const logoLinks = document.querySelectorAll('.nav-logo-link');
@@ -132,7 +132,7 @@
           link.href = '../Home/index.html#contact';
         });
         document.querySelectorAll('.nav-link-company').forEach(link => {
-          link.href = 'About us.html';
+          link.href = 'about-us.html';
         });
         
         // 更新底部导航链接
@@ -143,7 +143,7 @@
           link.href = '../Downloads/downloads.html';
         });
         document.querySelectorAll('footer .nav-link-company').forEach(link => {
-          link.href = 'About us.html';
+          link.href = 'about-us.html';
         });
         document.querySelectorAll('footer .nav-link-contact').forEach(link => {
           link.href = '../Home/index.html#contact';
@@ -695,4 +695,3 @@
   </script>
 </body>
 </html>
-

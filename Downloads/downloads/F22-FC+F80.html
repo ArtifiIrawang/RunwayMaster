@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>F722 FC + F80 ESC · 产品详情</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="F722 FC + F80 ESC 高性能飞控+电调套装技术参数与接线信息。" id="page-desc">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-black text-white flex flex-col">
+  <!-- 导航占位符 -->
+  <div id="nav-container"></div>
+
+  <!-- 复用现有 nav（路径按你项目里的为准） -->
+  <script>
+    fetch('../../Nav/partials/nav.html')
+      .then(r => r.text())
+      .then(html => {
+        // 创建临时容器来解析 HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        // 提取 header 和移动端导航
+        const headerContent = tempDiv.querySelector('header');
+        const mobileNavBackdrop = tempDiv.querySelector('#mobile-nav-backdrop');
+        const mobileNav = tempDiv.querySelector('#mobile-nav');
+        const footer = tempDiv.querySelector('footer');
+
+        // 将 header 和 mobile nav 添加到 nav-container
+        if (headerContent) {
+          document.getElementById('nav-container').appendChild(headerContent);
+        }
+        if (mobileNavBackdrop) {
+          document.getElementById('nav-container').appendChild(mobileNavBackdrop);
+        }
+        if (mobileNav) {
+          document.getElementById('nav-container').appendChild(mobileNav);
+        }
+
+        // 将 footer 添加到 footer-placeholder
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+        if (footerPlaceholder && footer) {
+          const footerClone = footer.cloneNode(true);
+          footerPlaceholder.replaceWith(footerClone);
+        }
+
+        const currentPath = window.location.pathname;
+        const isHomePage = currentPath.includes('index.html')
+          || currentPath.endsWith('/')
+          || currentPath.endsWith('/Home/');
+
+        const logoLinks = document.querySelectorAll('.nav-logo-link');
+        const logoImgs = document.querySelectorAll('.nav-logo-img');
+        logoLinks.forEach(link => {
+          link.href = isHomePage ? 'index.html' : '../../Home/index.html';
+        });
+        logoImgs.forEach(img => {
+          img.src = isHomePage ? 'logo.svg' : '../../Home/logo.svg';
+        });
+
+        if (isHomePage) {
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = '../about-us/about-us.html';
+          });
+        } else {
+          document.querySelectorAll('.nav-link-customized').forEach(link => {
+            link.href = '../../Home/index.html#customized';
+          });
+          document.querySelectorAll('.nav-link-case-center').forEach(link => {
+            link.href = '../../Case center/case center.html';
+          });
+          document.querySelectorAll('.nav-link-downloads').forEach(link => {
+            link.href = '../downloads.html';
+          });
+          document.querySelectorAll('.nav-link-contact').forEach(link => {
+            link.href = '../../Home/index.html#contact';
+          });
+          document.querySelectorAll('.nav-link-company').forEach(link => {
+            link.href = '../../about-us/about-us.html';
+          });
+        }
+
+        function initMobileNav() {
+          const mobileNav = document.getElementById("mobile-nav");
+          const mobileBackdrop = document.getElementById("mobile-nav-backdrop");
+          const mobileOpenBtn = document.getElementById("mobile-nav-open");
+          const mobileCloseBtn = document.getElementById("mobile-nav-close");
+          const mobileNavLinks = mobileNav ? mobileNav.querySelectorAll("[data-mobile-nav-link]") : [];
+
+          function setMobileNav(open) {
+            if (!mobileNav || !mobileBackdrop) return;
+            mobileNav.classList.toggle("-translate-x-full", !open);
+            mobileNav.setAttribute("aria-hidden", (!open).toString());
+            mobileBackdrop.classList.toggle("opacity-100", open);
+            mobileBackdrop.classList.toggle("pointer-events-auto", open);
+          }
+
+          [mobileOpenBtn, mobileCloseBtn].forEach(btn => {
+            if (!btn) return;
+            btn.addEventListener("click", () => setMobileNav(btn === mobileOpenBtn));
+          });
+
+          if (mobileBackdrop) {
+            mobileBackdrop.addEventListener("click", () => setMobileNav(false));
+          }
+
+          mobileNavLinks.forEach(link => {
+            link.addEventListener("click", () => setMobileNav(false));
+          });
+
+          const mq = window.matchMedia("(min-width: 768px)");
+          if (mq && mq.addEventListener) {
+            mq.addEventListener("change", e => {
+              if (e.matches) setMobileNav(false);
+            });
+          }
+        }
+
+        initMobileNav();
+        
+        // 语言切换功能
+        function bindLangButtons() {
+          document.addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-lang-btn]");
+            if (btn) {
+              const lang = btn.getAttribute("data-lang-btn");
+              document.querySelectorAll("[data-lang-btn]").forEach(b => b.classList.remove("active"));
+              btn.classList.add("active");
+              try {
+                localStorage.setItem("site-lang", lang);
+              } catch (e) {}
+              setLanguage(lang);
+            }
+          });
+        }
+        
+        bindLangButtons();
+
+        const translations = {
+          zh: {
+            "page.title": "F722 FC + F80 ESC · 产品详情",
+            "page.desc": "F722 FC + F80 ESC 高性能飞控+电调套装技术参数与接线信息。",
+            "hero.badge": "STACK KIT",
+            "hero.title": "F722 FC + F80 ESC",
+            "hero.desc": "高性能飞控+电调套装 · 高刷新、强动力、稳定输出。",
+            "hero.cta": "产品手册",
+            "highlights.title": "产品卖点 / KEY HIGHLIGHTS",
+            "highlights.desc": "F722 FC 搭载 F7 芯片与 ICM42688-P 陀螺仪，F80 ESC 提供 80A ×4 持续输出，支持双向 DShot 与多协议接收机，兼顾高刷新、稳定 PID 与强动力余量。",
+            "advantages.title": "产品优势",
+            "advantages.1.title": "F7 算力",
+            "advantages.1.desc": "STM32F722 主控，飞控性能稳定，适合高刷新与高动态飞行。",
+            "advantages.2.title": "高动态陀螺仪",
+            "advantages.2.desc": "ICM42688-P 陀螺仪，响应更灵敏，手感更跟手。",
+            "advantages.3.title": "80A ×4 持续电流",
+            "advantages.3.desc": "F80 ESC 4 合 1 结构，大电流输出留足余量。",
+            "advantages.4.title": "双向 DShot",
+            "advantages.4.desc": "支持 DShot300/600 与双向 DShot，RPM 过滤更顺滑。",
+            "advantages.5.title": "多协议接收机",
+            "advantages.5.desc": "兼容 ELRS/CRSF/S.BUS/Frsky/Futaba/Flysky/TBS/DSMX。",
+            "advantages.6.title": "电气保护",
+            "advantages.6.desc": "TVS 与低 ESR 电容，抗尖峰更耐用。",
+            "detail.1.title": "高刷新 · 稳定 PID",
+            "detail.1.desc1": "F722 FC 提供稳定算力与高速控制回路，适合高速飞行与复杂姿态切换。",
+            "detail.1.desc2": "调校更顺滑，空中手感更跟手。",
+            "detail.2.title": "供电与接口 · 扩展更方便",
+            "detail.2.desc1": "提供多路 5V/12V 供电输出与丰富接口，便于扩展图传、GPS 与外设。",
+            "detail.2.desc2": "Type-C USB 设计便于调参、刷固件与维护。",
+            "detail.3.title": "轻量与标准孔位",
+            "detail.3.desc1": "30.5 × 30.5 mm 标准安装孔位，兼容主流机架。",
+            "detail.3.desc2": "轻量化设计，整套重量控制在 45 g 以内（FC 9 g + ESC 35.7 g）。",
+            "specs.title": "技术参数 / TECHNICAL SPECIFICATIONS",
+            "specs.fc.title": "F722 FC 参数",
+            "specs.fc.firmwareName.label": "固件名称",
+            "specs.fc.firmwareName.value": "BETAFLIGHT / BF F722",
+            "specs.fc.firmwareVersion.label": "固件版本",
+            "specs.fc.firmwareVersion.value": "4.5.2 BTFL",
+            "specs.fc.mcu.label": "主控 MCU",
+            "specs.fc.mcu.value": "STM32F722",
+            "specs.fc.gyro.label": "陀螺仪",
+            "specs.fc.gyro.value": "ICM42688-P",
+            "specs.fc.barometer.label": "气压计",
+            "specs.fc.barometer.value": "SPL06-001",
+            "specs.fc.osd.label": "OSD MCU",
+            "specs.fc.osd.value": "AT7456E",
+            "specs.fc.blackbox.label": "黑匣子",
+            "specs.fc.blackbox.value": "16 MB",
+            "specs.fc.motorOutput.label": "电机输出",
+            "specs.fc.motorOutput.value": "8 ch",
+            "specs.fc.servoOutput.label": "舵机输出",
+            "specs.fc.servoOutput.value": "Support × 8",
+            "specs.fc.led.label": "LED",
+            "specs.fc.led.value": "Support × 1",
+            "specs.fc.buzzer.label": "蜂鸣器",
+            "specs.fc.buzzer.value": "Support",
+            "specs.fc.receiver.label": "接收机协议",
+            "specs.fc.receiver.value": "ELRS/CRSF/S.BUS/Frsky/Futaba/Flysky/TBS Crossfire/DSMX",
+            "specs.fc.uart.label": "通用串口",
+            "specs.fc.uart.value": "6 ch",
+            "specs.fc.power.label": "供电",
+            "specs.fc.power.value": "4×5V/0.5A，2×5V/3A，2×12V/3A",
+            "specs.fc.usb.label": "USB",
+            "specs.fc.usb.value": "Type-C",
+            "specs.fc.digitalVtx.label": "数字图传",
+            "specs.fc.digitalVtx.value": "Support DJI / Vista / Walksnail",
+            "specs.fc.ports.label": "接口",
+            "specs.fc.ports.value": "Receiver 4P / Simulated camera 3P / Simulation image transmission 4P / Digital video transmission 6P / Brushless ESC 8P×2 / GPS 6P",
+            "specs.fc.weight.label": "重量",
+            "specs.fc.weight.value": "9 g",
+            "specs.fc.dimensions.label": "外形尺寸",
+            "specs.fc.dimensions.value": "39.4 mm × 39.4 mm",
+            "specs.fc.mounting.label": "安装孔位",
+            "specs.fc.mounting.value": "30.5 mm × 30.5 mm / M4",
+            "specs.esc.title": "F80 ESC 参数",
+            "specs.esc.firmware.label": "固件",
+            "specs.esc.firmware.value": "BLHeli S / BLUEjay",
+            "specs.esc.mcu.label": "MCU",
+            "specs.esc.mcu.value": "EFM8BB51F16G-C",
+            "specs.esc.mosfet.label": "MOSFET",
+            "specs.esc.mosfet.value": "NTMFS5C430NLTIG-01",
+            "specs.esc.continuousCurrent.label": "持续电流",
+            "specs.esc.continuousCurrent.value": "80A ×4",
+            "specs.esc.peakCurrent.label": "峰值电流",
+            "specs.esc.peakCurrent.value": "80A ×4 (10s)",
+            "specs.esc.tvs.label": "TVS",
+            "specs.esc.tvs.value": "Have",
+            "specs.esc.capacitor.label": "电容",
+            "specs.esc.capacitor.value": "50V 1000uF Low ESR ×2",
+            "specs.esc.protocol.label": "电机协议",
+            "specs.esc.protocol.value": "DShot300 / DShot600 / PWM / Bi-directional DShot",
+            "specs.esc.battery.label": "电池输入",
+            "specs.esc.battery.value": "3–8 LIPO",
+            "specs.esc.ammeter.label": "电流计",
+            "specs.esc.ammeter.value": "Support",
+            "specs.esc.powerOut.label": "电源输出",
+            "specs.esc.powerOut.value": "VBAT",
+            "specs.esc.weight.label": "重量",
+            "specs.esc.weight.value": "35.7 g",
+            "specs.esc.dimensions.label": "外形尺寸",
+            "specs.esc.dimensions.value": "58.369 mm × 57.4 mm",
+            "specs.esc.mounting.label": "安装孔位",
+            "specs.esc.mounting.value": "30.5 mm × 30.5 mm / M4",
+            "specs.esc.workingTemp.label": "工作温度",
+            "specs.esc.workingTemp.value": "20℃–80℃",
+            "specs.esc.storageTemp.label": "存储温度",
+            "specs.esc.storageTemp.value": "20℃–70℃",
+            "specs.esc.humidity.label": "工作湿度",
+            "specs.esc.humidity.value": "20–95%",
+            "cta.download": "下载产品手册 PDF",
+            "cta.back": "← 返回下载中心"
+          },
+          en: {
+            "page.title": "F722 FC + F80 ESC · Product Details",
+            "page.desc": "F722 FC + F80 ESC high-performance FC + ESC stack specs and wiring.",
+            "hero.badge": "STACK KIT",
+            "hero.title": "F722 FC + F80 ESC",
+            "hero.desc": "High-performance FC + ESC kit with high refresh, strong power, and stable output.",
+            "hero.cta": "Product Manual",
+            "highlights.title": "Key Highlights",
+            "highlights.desc": "F722 FC with F7 MCU and ICM42688-P gyro, F80 ESC delivers 80A ×4 continuous current, supports bidirectional DShot and multi-protocol receivers for high refresh, stable PID and power headroom.",
+            "advantages.title": "Key Advantages",
+            "advantages.1.title": "F7 Compute",
+            "advantages.1.desc": "STM32F722 MCU for stable control and high refresh rates.",
+            "advantages.2.title": "High-Dynamic Gyro",
+            "advantages.2.desc": "ICM42688-P gyro for faster response and tighter feel.",
+            "advantages.3.title": "80A ×4 Continuous",
+            "advantages.3.desc": "F80 ESC 4-in-1 with ample current headroom.",
+            "advantages.4.title": "Bidirectional DShot",
+            "advantages.4.desc": "Supports DShot300/600 and bidirectional DShot for smoother RPM filtering.",
+            "advantages.5.title": "Multi-Protocol RX",
+            "advantages.5.desc": "Supports ELRS/CRSF/S.BUS/Frsky/Futaba/Flysky/TBS/DSMX.",
+            "advantages.6.title": "Electrical Protection",
+            "advantages.6.desc": "TVS + low ESR capacitors for better surge protection.",
+            "detail.1.title": "High Refresh · Stable PID",
+            "detail.1.desc1": "Stable compute and fast control loop for aggressive maneuvers.",
+            "detail.1.desc2": "Smoother tuning and more locked-in feel.",
+            "detail.2.title": "Power & Ports · Easy Expansion",
+            "detail.2.desc1": "Multiple 5V/12V outputs and rich ports for VTX, GPS and peripherals.",
+            "detail.2.desc2": "Type-C USB for easier tuning and firmware updates.",
+            "detail.3.title": "Lightweight & Standard Mount",
+            "detail.3.desc1": "30.5 × 30.5 mm mounting holes, compatible with mainstream frames.",
+            "detail.3.desc2": "Lightweight stack under 45 g (FC 9 g + ESC 35.7 g).",
+            "specs.title": "Technical Specifications",
+            "specs.fc.title": "F722 FC Specs",
+            "specs.fc.firmwareName.label": "Firmware",
+            "specs.fc.firmwareName.value": "BETAFLIGHT / BF F722",
+            "specs.fc.firmwareVersion.label": "Firmware Version",
+            "specs.fc.firmwareVersion.value": "4.5.2 BTFL",
+            "specs.fc.mcu.label": "MCU",
+            "specs.fc.mcu.value": "STM32F722",
+            "specs.fc.gyro.label": "Gyro",
+            "specs.fc.gyro.value": "ICM42688-P",
+            "specs.fc.barometer.label": "Barometer",
+            "specs.fc.barometer.value": "SPL06-001",
+            "specs.fc.osd.label": "OSD MCU",
+            "specs.fc.osd.value": "AT7456E",
+            "specs.fc.blackbox.label": "Blackbox",
+            "specs.fc.blackbox.value": "16 MB",
+            "specs.fc.motorOutput.label": "Motor Outputs",
+            "specs.fc.motorOutput.value": "8 ch",
+            "specs.fc.servoOutput.label": "Servo Outputs",
+            "specs.fc.servoOutput.value": "Support × 8",
+            "specs.fc.led.label": "LED",
+            "specs.fc.led.value": "Support × 1",
+            "specs.fc.buzzer.label": "Buzzer",
+            "specs.fc.buzzer.value": "Support",
+            "specs.fc.receiver.label": "Receiver Protocols",
+            "specs.fc.receiver.value": "ELRS/CRSF/S.BUS/Frsky/Futaba/Flysky/TBS Crossfire/DSMX",
+            "specs.fc.uart.label": "UART",
+            "specs.fc.uart.value": "6 ch",
+            "specs.fc.power.label": "Power Output",
+            "specs.fc.power.value": "4×5V/0.5A, 2×5V/3A, 2×12V/3A",
+            "specs.fc.usb.label": "USB",
+            "specs.fc.usb.value": "Type-C",
+            "specs.fc.digitalVtx.label": "Digital VTX",
+            "specs.fc.digitalVtx.value": "Support DJI / Vista / Walksnail",
+            "specs.fc.ports.label": "Ports",
+            "specs.fc.ports.value": "Receiver 4P / Simulated camera 3P / Simulation image transmission 4P / Digital video transmission 6P / Brushless ESC 8P×2 / GPS 6P",
+            "specs.fc.weight.label": "Weight",
+            "specs.fc.weight.value": "9 g",
+            "specs.fc.dimensions.label": "Dimensions",
+            "specs.fc.dimensions.value": "39.4 mm × 39.4 mm",
+            "specs.fc.mounting.label": "Mounting",
+            "specs.fc.mounting.value": "30.5 mm × 30.5 mm / M4",
+            "specs.esc.title": "F80 ESC Specs",
+            "specs.esc.firmware.label": "Firmware",
+            "specs.esc.firmware.value": "BLHeli S / BLUEjay",
+            "specs.esc.mcu.label": "MCU",
+            "specs.esc.mcu.value": "EFM8BB51F16G-C",
+            "specs.esc.mosfet.label": "MOSFET",
+            "specs.esc.mosfet.value": "NTMFS5C430NLTIG-01",
+            "specs.esc.continuousCurrent.label": "Continuous Current",
+            "specs.esc.continuousCurrent.value": "80A ×4",
+            "specs.esc.peakCurrent.label": "Peak Current",
+            "specs.esc.peakCurrent.value": "80A ×4 (10s)",
+            "specs.esc.tvs.label": "TVS",
+            "specs.esc.tvs.value": "Yes",
+            "specs.esc.capacitor.label": "Capacitor",
+            "specs.esc.capacitor.value": "50V 1000uF Low ESR ×2",
+            "specs.esc.protocol.label": "Motor Protocol",
+            "specs.esc.protocol.value": "DShot300 / DShot600 / PWM / Bidirectional DShot",
+            "specs.esc.battery.label": "Battery Input",
+            "specs.esc.battery.value": "3–8 LIPO",
+            "specs.esc.ammeter.label": "Ammeter",
+            "specs.esc.ammeter.value": "Support",
+            "specs.esc.powerOut.label": "Power Output",
+            "specs.esc.powerOut.value": "VBAT",
+            "specs.esc.weight.label": "Weight",
+            "specs.esc.weight.value": "35.7 g",
+            "specs.esc.dimensions.label": "Dimensions",
+            "specs.esc.dimensions.value": "58.369 mm × 57.4 mm",
+            "specs.esc.mounting.label": "Mounting",
+            "specs.esc.mounting.value": "30.5 mm × 30.5 mm / M4",
+            "specs.esc.workingTemp.label": "Working Temp",
+            "specs.esc.workingTemp.value": "20℃–80℃",
+            "specs.esc.storageTemp.label": "Storage Temp",
+            "specs.esc.storageTemp.value": "20℃–70℃",
+            "specs.esc.humidity.label": "Working Humidity",
+            "specs.esc.humidity.value": "20–95%",
+            "cta.download": "Download PDF",
+            "cta.back": "← Back to Download Center"
+          }
+        };
+
+        function setLanguage(lang) {
+          const dict = translations[lang] || translations.zh;
+          document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+          if (dict["page.title"]) {
+            document.title = dict["page.title"];
+          }
+          const descEl = document.getElementById("page-desc");
+          if (descEl && dict["page.desc"]) {
+            descEl.setAttribute("content", dict["page.desc"]);
+          }
+          document.querySelectorAll("[data-i18n-key]").forEach(el => {
+            const key = el.getAttribute("data-i18n-key");
+            const text = dict[key];
+            if (typeof text === "string") {
+              el.textContent = text;
+            }
+          });
+          syncLangButtons(lang);
+        }
+
+        function syncLangButtons(lang) {
+          document.querySelectorAll("[data-lang-btn]").forEach(btn => {
+            btn.classList.toggle("active", btn.getAttribute("data-lang-btn") === lang);
+          });
+        }
+
+        const savedLang = (() => {
+          try {
+            return localStorage.getItem("site-lang");
+          } catch (e) {
+            return null;
+          }
+        })();
+        setLanguage(savedLang || "zh");
+        
+        // 更新 footer 链接
+        const footerElement = document.querySelector('footer');
+        if (footerElement) {
+          document.querySelectorAll('footer .nav-link-customized').forEach(link => {
+            link.href = '../../Home/index.html#customized';
+          });
+          document.querySelectorAll('footer .nav-link-downloads').forEach(link => {
+            link.href = '../downloads.html';
+          });
+          document.querySelectorAll('footer .nav-link-company').forEach(link => {
+            link.href = '../../about-us/about-us.html';
+          });
+          document.querySelectorAll('footer .nav-link-contact').forEach(link => {
+            link.href = '../../Home/index.html#contact';
+          });
+          
+          const yearEl = document.getElementById('year');
+          if (yearEl) {
+            yearEl.textContent = new Date().getFullYear();
+          }
+        }
+      })
+      .catch(e => console.error('加载导航失败:', e));
+  </script>
+  
+  <style>
+    .lang-toggle-btn {
+      border-radius: 999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #a1a1aa;
+    }
+    .lang-toggle-btn.active {
+      border-color: #f97316;
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.15);
+    }
+  </style>
+
+  <main class="flex-1 pt-20 md:pt-24">
+
+    <!-- 1. 开屏满屏大图 + 产品名 + 按钮 -->
+    <section class="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] h-[80vh] md:h-screen">
+      <!-- 产品大图 -->
+      <img
+        src="/Home/F722+F80.png"
+        alt="F722 FC + F80 ESC 产品大图"
+        class="w-full h-full object-cover"
+      />
+      <!-- 渐变遮罩 -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/10"></div>
+
+      <!-- 居中内容 -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center px-4 max-w-3xl">
+          <p class="text-xs md:text-sm tracking-[0.35em] uppercase text-orange-300 mb-4" data-i18n-key="hero.badge">
+            STACK KIT
+          </p>
+          <h1 class="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-4 md:mb-6">
+            <span data-i18n-key="hero.title">F722 FC + F80 ESC</span>
+          </h1>
+          <p class="text-sm md:text-base text-zinc-200 mb-6 md:mb-8">
+            <span data-i18n-key="hero.desc">高性能飞控+电调套装 · 高刷新、强动力、稳定输出。</span>
+          </p>
+
+          <!-- 按钮：下载 icon + 产品手册 -->
+          <a
+            href="../docs/F722-FC+F80.pdf"
+            download
+            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-sm font-medium text-black transition shadow-lg shadow-orange-500/30"
+          >
+            <!-- 下载 icon -->
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8">
+              <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span data-i18n-key="hero.cta">产品手册</span>
+            <span class="text-xs opacity-80">PDF</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 页面主体内容 -->
+    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-10 md:py-16 space-y-20 md:space-y-28">
+
+      <!-- 2. 居中：产品卖点标题 + 文案 -->
+      <section class="text-center max-w-3xl mx-auto">
+        <h2 class="text-xl md:text-2xl font-semibold tracking-[0.25em] uppercase mb-4" data-i18n-key="highlights.title">
+          产品卖点 / KEY HIGHLIGHTS
+        </h2>
+        <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+          <span data-i18n-key="highlights.desc">F722 FC 搭载 F7 芯片与 ICM42688-P 陀螺仪，F80 ESC 提供 80A ×4 持续输出，支持双向 DShot 与多协议接收机，兼顾高刷新、稳定 PID 与强动力余量。</span>
+        </p>
+      </section>
+
+      <!-- 3. 单张产品图 -->
+      <section>
+        <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+          <img
+            src="/Home/F722+F80.png"
+            alt="F722 FC + F80 ESC 产品展示图"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </section>
+
+      <!-- 4. 六块优势点 -->
+      <section>
+        <h3 class="text-lg md:text-xl font-semibold mb-4 md:mb-6" data-i18n-key="advantages.title">
+          产品优势
+        </h3>
+        <div class="grid gap-4 md:gap-5 md:grid-cols-3">
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2" data-i18n-key="advantages.1.title">F7 算力</p>
+            <p class="text-xs md:text-sm text-zinc-400" data-i18n-key="advantages.1.desc">
+              STM32F722 主控，飞控性能稳定，适合高刷新与高动态飞行。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2" data-i18n-key="advantages.2.title">高动态陀螺仪</p>
+            <p class="text-xs md:text-sm text-zinc-400" data-i18n-key="advantages.2.desc">
+              ICM42688-P 陀螺仪，响应更灵敏，手感更跟手。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2" data-i18n-key="advantages.3.title">80A ×4 持续电流</p>
+            <p class="text-xs md:text-sm text-zinc-400" data-i18n-key="advantages.3.desc">
+              F80 ESC 4 合 1 结构，大电流输出留足余量。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2" data-i18n-key="advantages.4.title">双向 DShot</p>
+            <p class="text-xs md:text-sm text-zinc-400" data-i18n-key="advantages.4.desc">
+              支持 DShot300/600 与双向 DShot，RPM 过滤更顺滑。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2" data-i18n-key="advantages.5.title">多协议接收机</p>
+            <p class="text-xs md:text-sm text-zinc-400" data-i18n-key="advantages.5.desc">
+              兼容 ELRS/CRSF/S.BUS/Frsky/Futaba/Flysky/TBS/DSMX。
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-5">
+            <p class="text-sm font-medium mb-2" data-i18n-key="advantages.6.title">电气保护</p>
+            <p class="text-xs md:text-sm text-zinc-400" data-i18n-key="advantages.6.desc">
+              TVS 与低 ESR 电容，抗尖峰更耐用。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 5. 再一张产品图 -->
+      <section>
+        <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+          <img
+            src="/Home/F722+F80.png"
+            alt="F722 FC + F80 ESC 细节展示"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </section>
+      <!-- 6. 图文左右排布（三段交替） -->
+      <section class="space-y-16 md:space-y-20">
+
+        <!-- 段 1：图左 · 文右 -->
+        <div class="grid gap-8 md:gap-10 md:grid-cols-2 items-center">
+          <!-- 左：图 -->
+          <div>
+            <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+              <img
+                src="/Home/F722+F80.png"
+                alt="F722 FC + F80 ESC 场景展示 1"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+          <!-- 右：文案 -->
+          <div class="space-y-3 md:space-y-4">
+            <h3 class="text-lg md:text-xl font-semibold">
+              <span data-i18n-key="detail.1.title">高刷新 · 稳定 PID</span>
+            </h3>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              <span data-i18n-key="detail.1.desc1">F722 FC 提供稳定算力与高速控制回路，适合高速飞行与复杂姿态切换。</span>
+            </p>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              <span data-i18n-key="detail.1.desc2">调校更顺滑，空中手感更跟手。</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- 段 2：文左 · 图右 -->
+        <div class="grid gap-8 md:gap-10 md:grid-cols-2 items-center">
+          <!-- 左：文案 -->
+          <div class="order-2 md:order-1 space-y-3 md:space-y-4">
+            <h3 class="text-lg md:text-xl font-semibold">
+              <span data-i18n-key="detail.2.title">供电与接口 · 扩展更方便</span>
+            </h3>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              <span data-i18n-key="detail.2.desc1">提供多路 5V/12V 供电输出与丰富接口，便于扩展图传、GPS 与外设。</span>
+            </p>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              <span data-i18n-key="detail.2.desc2">Type-C USB 设计便于调参、刷固件与维护。</span>
+            </p>
+          </div>
+          <!-- 右：图 -->
+          <div class="order-1 md:order-2">
+            <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+              <img
+                src="/Home/F722+F80.png"
+                alt="F722 FC + F80 ESC 场景展示 2"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- 段 3：图左 · 文右 -->
+        <div class="grid gap-8 md:gap-10 md:grid-cols-2 items-center">
+          <!-- 左：图 -->
+          <div>
+            <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+              <img
+                src="/Home/F722+F80.png"
+                alt="F722 FC + F80 ESC 场景展示 3"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+          <!-- 右：文案 -->
+          <div class="space-y-3 md:space-y-4">
+            <h3 class="text-lg md:text-xl font-semibold">
+              <span data-i18n-key="detail.3.title">轻量与标准孔位</span>
+            </h3>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              <span data-i18n-key="detail.3.desc1">30.5 × 30.5 mm 标准安装孔位，兼容主流机架。</span>
+            </p>
+            <p class="text-sm md:text-base text-zinc-300 leading-relaxed">
+              <span data-i18n-key="detail.3.desc2">轻量化设计，整套重量控制在 45 g 以内（FC 9 g + ESC 35.7 g）。</span>
+            </p>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- 7. 技术参数：表格左右排布 -->
+      <section>
+        <h3 class="text-lg md:text-xl font-semibold mb-4 md:mb-6" data-i18n-key="specs.title">
+          技术参数 / TECHNICAL SPECIFICATIONS
+        </h3>
+
+        <div class="grid gap-6 md:gap-8 md:grid-cols-2">
+          <!-- 左：基础内容 -->
+          <div class="rounded-3xl border border-zinc-800 bg-zinc-950/80 p-4 md:p-6">
+            <h4 class="text-sm md:text-base font-medium mb-3 md:mb-4" data-i18n-key="specs.fc.title">
+              F722 FC 参数
+            </h4>
+            <table class="w-full text-xs md:text-sm text-zinc-300 border-separate border-spacing-y-1">
+              <tbody>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.firmwareName.label">固件名称</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.firmwareName.value">BETAFLIGHT / BF F722</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.firmwareVersion.label">固件版本</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.firmwareVersion.value">4.5.2 BTFL</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.mcu.label">主控 MCU</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.mcu.value">STM32F722</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.gyro.label">陀螺仪</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.gyro.value">ICM42688-P</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.barometer.label">气压计</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.barometer.value">SPL06-001</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.osd.label">OSD MCU</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.osd.value">AT7456E</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.blackbox.label">黑匣子</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.blackbox.value">16 MB</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.motorOutput.label">电机输出</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.motorOutput.value">8 ch</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.servoOutput.label">舵机输出</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.servoOutput.value">Support × 8</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.led.label">LED</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.led.value">Support × 1</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.buzzer.label">蜂鸣器</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.buzzer.value">Support</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.receiver.label">接收机协议</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.receiver.value">ELRS/CRSF/S.BUS/Frsky/Futaba/Flysky/TBS Crossfire/DSMX</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.uart.label">通用串口</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.uart.value">6 ch</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.power.label">供电</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.power.value">4×5V/0.5A，2×5V/3A，2×12V/3A</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.usb.label">USB</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.usb.value">Type-C</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.digitalVtx.label">数字图传</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.digitalVtx.value">Support DJI / Vista / Walksnail</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.ports.label">接口</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.ports.value">Receiver 4P / Simulated camera 3P / Simulation image transmission 4P / Digital video transmission 6P / Brushless ESC 8P×2 / GPS 6P</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.weight.label">重量</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.weight.value">9 g</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.dimensions.label">外形尺寸</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.dimensions.value">39.4 mm × 39.4 mm</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.fc.mounting.label">安装孔位</td>
+                  <td class="py-1.5" data-i18n-key="specs.fc.mounting.value">30.5 mm × 30.5 mm / M4</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 右：具体参数 -->
+          <div class="rounded-3xl border border-zinc-800 bg-zinc-950/80 p-4 md:p-6">
+            <h4 class="text-sm md:text-base font-medium mb-3 md:mb-4" data-i18n-key="specs.esc.title">
+              F80 ESC 参数
+            </h4>
+            <table class="w-full text-xs md:text-sm text-zinc-300 border-separate border-spacing-y-1">
+              <tbody>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.firmware.label">固件</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.firmware.value">BLHeli S / BLUEjay</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.mcu.label">MCU</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.mcu.value">EFM8BB51F16G-C</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.mosfet.label">MOSFET</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.mosfet.value">NTMFS5C430NLTIG-01</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.continuousCurrent.label">持续电流</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.continuousCurrent.value">80A ×4</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.peakCurrent.label">峰值电流</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.peakCurrent.value">80A ×4 (10s)</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.tvs.label">TVS</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.tvs.value">Have</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.capacitor.label">电容</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.capacitor.value">50V 1000uF Low ESR ×2</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.protocol.label">电机协议</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.protocol.value">DShot300 / DShot600 / PWM / Bi-directional DShot</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.battery.label">电池输入</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.battery.value">3–8 LIPO</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.ammeter.label">电流计</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.ammeter.value">Support</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.powerOut.label">电源输出</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.powerOut.value">VBAT</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.weight.label">重量</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.weight.value">35.7 g</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.dimensions.label">外形尺寸</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.dimensions.value">58.369 mm × 57.4 mm</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.mounting.label">安装孔位</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.mounting.value">30.5 mm × 30.5 mm / M4</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.workingTemp.label">工作温度</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.workingTemp.value">20℃–80℃</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.storageTemp.label">存储温度</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.storageTemp.value">20℃–70℃</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 pr-3 text-zinc-500 whitespace-nowrap" data-i18n-key="specs.esc.humidity.label">工作湿度</td>
+                  <td class="py-1.5" data-i18n-key="specs.esc.humidity.value">20–95%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 底部再给一个下载按钮 + 返回链接 -->
+        <div class="mt-8 md:mt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <a
+            href="../docs/F722-FC+F80.pdf"
+            download
+            class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-orange-500/90 hover:bg-orange-400 text-xs md:text-sm font-medium text-black transition"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8">
+              <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span data-i18n-key="cta.download">下载产品手册 PDF</span>
+          </a>
+
+          <a
+            href="../downloads.html"
+            class="text-xs md:text-sm text-zinc-400 hover:text-orange-300 transition"
+          >
+            <span data-i18n-key="cta.back">← 返回下载中心</span>
+          </a>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- 底部导航占位符 -->
+  <div id="footer-placeholder"></div>
+</body>
+</html>

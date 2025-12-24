@@ -10,8 +10,8 @@ Runwaymaster Network/
 │   ├── index.html          # 首页
 │   ├── logo.svg            # Logo 文件
 │   └── *.mp4, *.png        # 媒体资源
-├── About us/
-│   ├── About us.html       # 关于我们页面
+├── about-us/
+│   ├── about-us.html       # 关于我们页面
 │   └── map.png             # 地图图片
 ├── Nav/
 │   └── partials/
@@ -42,7 +42,7 @@ Runwaymaster Network/
 - 公司信息
 - 联系表单（仅邮箱）
 
-#### 关于我们页面 (About us/About us.html)
+#### 关于我们页面 (about-us/about-us.html)
 - 全屏视频展示
 - 公司介绍和核心优势
 - 全球工厂信息（集成 Google 地图）
@@ -96,7 +96,7 @@ npm run preview
 
 1. 访问 [Google Maps Embed API](https://developers.google.com/maps/documentation/embed/get-started)
 2. 获取您的位置坐标
-3. 在 `About us.html` 中更新 iframe 的 `src` 属性
+3. 在 `about-us.html` 中更新 iframe 的 `src` 属性
 
 当前使用的是示例坐标，请替换为实际工厂位置。
 

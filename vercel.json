@@ -9,7 +9,7 @@
     },
     {
       "source": "/about",
-      "destination": "/About us/About us.html"
+      "destination": "/about-us/about-us.html"
     },
     {
       "source": "/downloads",

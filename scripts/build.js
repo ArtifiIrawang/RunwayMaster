@@ -10,7 +10,7 @@ const path = require('path');
 
 const sourceDirs = [
   'Home',
-  'About us',
+  'about-us',
   'Downloads',
   'Case center',
   'Nav'
@@ -79,7 +79,6 @@ for (const file of sourceFiles) {
 
 console.log('\n✅ 构建完成！所有文件已复制到 public/ 目录');
 console.log(`📦 输出目录: ${path.join(__dirname, '..', outputDir)}`);
-
 
 
 

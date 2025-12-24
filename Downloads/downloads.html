@@ -99,7 +99,7 @@
         // 更新导航链接
         if (isHomePage) {
           document.querySelectorAll('.nav-link-company').forEach(link => {
-            link.href = '../About us/About us.html';
+            link.href = '../about-us/about-us.html';
           });
         } else {
           document.querySelectorAll('.nav-link-customized').forEach(link => {
@@ -115,7 +115,7 @@
             link.href = '../Home/index.html#contact';
           });
           document.querySelectorAll('.nav-link-company').forEach(link => {
-            link.href = 'About us.html';
+            link.href = 'about-us.html';
           });
         }
         
@@ -128,7 +128,7 @@
             link.href = '#downloads';
           });
           document.querySelectorAll('footer .nav-link-company').forEach(link => {
-            link.href = '../About us/About us.html';
+            link.href = '../about-us/about-us.html';
           });
           document.querySelectorAll('footer .nav-link-contact').forEach(link => {
             link.href = '#contact';
@@ -141,7 +141,7 @@
             link.href = 'downloads.html';
           });
           document.querySelectorAll('footer .nav-link-company').forEach(link => {
-            link.href = 'About us.html';
+            link.href = 'about-us.html';
           });
           document.querySelectorAll('footer .nav-link-contact').forEach(link => {
             link.href = '../Home/index.html#contact';
@@ -292,7 +292,6 @@
                 <option value="" data-i18n-key="downloads.filter.type.all">全部机型</option>
                 <option value="fpv" data-i18n-key="downloads.filter.type.fpv">FPV</option>
                 <option value="industrial" data-i18n-key="downloads.filter.type.industrial">工业无人机</option>
-                <option value="anti" data-i18n-key="downloads.filter.type.anti">反无人机</option>
                 <option value="accessories" data-i18n-key="downloads.filter.type.accessories">配件</option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-zinc-500">
@@ -320,7 +319,6 @@
                 <option value="rm-vt" data-i18n-key="downloads.filter.model.rmvt">RM-VT</option>
                 <option value="inspection-quad" data-i18n-key="downloads.filter.model.inspection">巡检四旋翼</option>
                 <option value="agri-sprayer" data-i18n-key="downloads.filter.model.agri">农业喷洒机</option>
-                <option value="anti-station" data-i18n-key="downloads.filter.model.antiStation">反无人机站</option>
                 <option value="link-kit" data-i18n-key="downloads.filter.model.linkKit">高清图传套件</option>
                 <option value="gcs" data-i18n-key="downloads.filter.model.gcs">地面控制站</option>
               </select>
@@ -335,7 +333,7 @@
       </div>
     </section>
 
-    <!-- 下载列表：按 FPV / 工业 / 反无人机 / 配件 四大块平铺 -->
+    <!-- 下载列表：按 FPV / 工业 / 配件 三大块平铺 -->
     <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pb-12 md:pb-16 space-y-14 md:space-y-20">
 
       <!-- FPV -->
@@ -482,7 +480,7 @@
             data-series="industrial"
             data-model="evo-max"
             data-has-page="true"
-            data-page-url="evo-max.html"
+            data-page-url="downloads/evo-max.html"
             data-pdf-url="pdfs/evo-max-manual.pdf"
             class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
           >
@@ -581,126 +579,6 @@
         </div>
       </section>
 
-      <!-- Anti-Drone -->
-      <section>
-        <div class="flex items-center gap-3 mb-6">
-          <h2 class="flex-1 text-left text-base md:text-lg font-semibold tracking-[0.18em] uppercase text-zinc-100" data-i18n-key="downloads.category.anti"></h2>
-          <button
-            type="button"
-            class="shrink-0 inline-flex items-center gap-1.5 text-[11px] md:text-xs text-zinc-400 hover:text-orange-300 transition"
-          >
-            <span data-i18n-key="downloads.more"></span>
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="grid gap-4 md:gap-5 md:grid-cols-3">
-          <!-- 卡片 1 -->
-          <article
-            data-download-card
-            data-series="anti"
-            data-model="anti-portable"
-            data-has-page="false"
-            data-pdf-url="pdfs/anti-portable-manual.pdf"
-            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
-          >
-            <div class="aspect-video bg-black overflow-hidden">
-              <img src="/Home/fanwurenji.png" alt="Portable Anti-drone" class="w-full h-full object-cover">
-            </div>
-            <div class="p-3.5 md:p-4 text-xs md:text-sm">
-              <div class="flex items-center justify-between gap-2 mb-1.5">
-                <p class="font-medium">Portable Anti-drone · Data Sheet</p>
-              </div>
-              <p class="text-zinc-400 mb-3">
-                RF bands, power levels and coverage specs for portable anti-drone system.
-              </p>
-              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
-                <button
-                  type="button"
-                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
-                  data-pdf-url="pdfs/anti-station-manual.pdf"
-                >
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                  <span>PDF</span>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- 卡片 2 -->
-          <article
-            data-download-card
-            data-series="anti"
-            data-model="anti-station"
-            data-has-page="false"
-            data-pdf-url="pdfs/anti-station-manual.pdf"
-            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
-          >
-            <div class="aspect-video bg-black overflow-hidden">
-              <img src="/Home/fanwurenji.png" alt="Fixed Anti-drone Station" class="w-full h-full object-cover">
-            </div>
-            <div class="p-3.5 md:p-4 text-xs md:text-sm">
-              <div class="flex items-center justify-between gap-2 mb-1.5">
-                <p class="font-medium">Anti-drone Station · System Manual</p>
-              </div>
-              <p class="text-zinc-400 mb-3">
-                Installation and maintenance guide for fixed anti-drone station.
-              </p>
-              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
-                <button
-                  type="button"
-                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
-                  data-pdf-url="pdfs/anti-radar-manual.pdf"
-                >
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                  <span>PDF</span>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- 卡片 3 -->
-          <article
-            data-download-card
-            data-series="anti"
-            data-model="anti-radar"
-            data-has-page="false"
-            data-pdf-url="pdfs/anti-radar-manual.pdf"
-            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
-          >
-            <div class="aspect-video bg-black overflow-hidden">
-              <img src="/Home/fanwurenji.png" alt="Radar Integration" class="w-full h-full object-cover">
-            </div>
-            <div class="p-3.5 md:p-4 text-xs md:text-sm">
-              <div class="flex items-center justify-between gap-2 mb-1.5">
-                <p class="font-medium">Radar Integration · Interface Guide</p>
-              </div>
-              <p class="text-zinc-400 mb-3">
-                Integration guide for radar + EO/IR anti-drone solution.
-              </p>
-              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
-                <button
-                  type="button"
-                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
-                  data-pdf-url="pdfs/freestyle-5-specs.pdf"
-                >
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                  <span>PDF</span>
-                </button>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
-
       <!-- Accessories -->
       <section>
         <div class="flex items-center gap-3 mb-6">
@@ -722,25 +600,24 @@
             data-download-card
             data-series="accessories"
             data-model="link-kit"
-            data-has-page="false"
-            data-pdf-url="pdfs/link-kit-manual.pdf"
+            data-has-page="true"
+            data-page-url="downloads/F22-FC+F80.html"
+            data-pdf-url="docs/F722-FC+F80.pdf"
             class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
           >
             <div class="aspect-video bg-black overflow-hidden">
-              <img src="/Home/daotong.png" alt="HD Link Kit" class="w-full h-full object-cover">
+              <img src="/Home/F722+F80.png" alt="F722+F80 Stack Kit" class="w-full h-full object-cover">
             </div>
             <div class="p-3.5 md:p-4 text-xs md:text-sm">
               <div class="flex items-center justify-between gap-2 mb-1.5">
-                <p class="font-medium">HD Video Link Kit · Spec Sheet</p>
+                <p class="font-medium" data-i18n-key="downloads.accessories.f722.title"></p>
               </div>
-              <p class="text-zinc-400 mb-3">
-                Wireless link specs and pinout for HD video transmission kit.
-              </p>
+              <p class="text-zinc-400 mb-3" data-i18n-key="downloads.accessories.f722.desc"></p>
               <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
                 <button
                   type="button"
                   class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
-                  data-pdf-url="pdfs/smart-battery-manual.pdf"
+                  data-pdf-url="docs/F722-FC+F80.pdf"
                 >
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
@@ -751,73 +628,7 @@
             </div>
           </article>
 
-          <!-- 卡片 2 -->
-          <article
-            data-download-card
-            data-series="accessories"
-            data-model="smart-battery"
-            data-has-page="false"
-            data-pdf-url="pdfs/smart-battery-manual.pdf"
-            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
-          >
-            <div class="aspect-video bg-black overflow-hidden">
-              <img src="/Home/daotong.png" alt="Smart Battery" class="w-full h-full object-cover">
-            </div>
-            <div class="p-3.5 md:p-4 text-xs md:text-sm">
-              <div class="flex items-center justify-between gap-2 mb-1.5">
-                <p class="font-medium">Smart Battery · Safety Manual</p>
-              </div>
-              <p class="text-zinc-400 mb-3">
-                Charging, storage and transportation requirements for smart battery packs.
-              </p>
-              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
-                <button
-                  type="button"
-                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
-                  data-pdf-url="pdfs/gcs-manual.pdf"
-                >
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                  <span>PDF</span>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- 卡片 3 -->
-          <article
-            data-download-card
-            data-series="accessories"
-            data-model="gcs"
-            data-has-page="false"
-            data-pdf-url="pdfs/gcs-manual.pdf"
-            class="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden hover:border-orange-400/70 transition cursor-pointer"
-          >
-            <div class="aspect-video bg-black overflow-hidden">
-              <img src="/Home/daotong.png" alt="Ground Control Station" class="w-full h-full object-cover">
-            </div>
-            <div class="p-3.5 md:p-4 text-xs md:text-sm">
-              <div class="flex items-center justify-between gap-2 mb-1.5">
-                <p class="font-medium">Ground Control Station · Software Manual</p>
-              </div>
-              <p class="text-zinc-400 mb-3">
-                Software manual for GCS with mission planning and fleet management.
-              </p>
-              <div class="flex items-center justify-end gap-2 text-[11px] md:text-xs text-zinc-100">
-                <button
-                  type="button"
-                  class="download-pdf-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-500/90 hover:bg-orange-400 text-[11px] font-medium text-black transition"
-                  data-pdf-url="pdfs/freestyle-5-specs.pdf"
-                >
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                  <span>PDF</span>
-                </button>
-              </div>
-            </div>
-          </article>
+          <!-- 卡片 2（暂时移除） -->
         </div>
       </section>
 
@@ -1012,7 +823,6 @@
 
         "downloads.category.fpv": "FPV",
         "downloads.category.industrial": "Industrial Drone",
-        "downloads.category.anti": "Anti-Drone",
         "downloads.category.accessories": "Accessories",
 
         "downloads.more": "展开更多",
@@ -1028,7 +838,6 @@
         "downloads.filter.type.all": "全部机型",
         "downloads.filter.type.fpv": "FPV",
         "downloads.filter.type.industrial": "工业无人机",
-        "downloads.filter.type.anti": "反无人机",
         "downloads.filter.type.accessories": "配件",
         "downloads.filter.model.label": "具体型号",
         "downloads.filter.model.all": "全部型号",
@@ -1037,9 +846,10 @@
         "downloads.filter.model.rmvt": "RM-VT",
         "downloads.filter.model.inspection": "巡检四旋翼",
         "downloads.filter.model.agri": "农业喷洒机",
-        "downloads.filter.model.antiStation": "反无人机站",
         "downloads.filter.model.linkKit": "高清图传套件",
-        "downloads.filter.model.gcs": "地面控制站"
+        "downloads.filter.model.gcs": "地面控制站",
+        "downloads.accessories.f722.title": "F722 FC + F80 ESC｜高性能飞控+电调套装",
+        "downloads.accessories.f722.desc": "F722 FC 与 F80 ESC 4 合 1 电调组合，兼顾高刷新与大动力余量。"
       },
 
       en: {
@@ -1068,7 +878,6 @@
 
         "downloads.category.fpv": "FPV",
         "downloads.category.industrial": "Industrial Drone",
-        "downloads.category.anti": "Anti-Drone",
         "downloads.category.accessories": "Accessories",
 
         "downloads.more": "View more",
@@ -1084,7 +893,6 @@
         "downloads.filter.type.all": "All Types",
         "downloads.filter.type.fpv": "FPV",
         "downloads.filter.type.industrial": "Industrial Drone",
-        "downloads.filter.type.anti": "Anti-Drone",
         "downloads.filter.type.accessories": "Accessories",
         "downloads.filter.model.label": "Model",
         "downloads.filter.model.all": "All Models",
@@ -1093,9 +901,10 @@
         "downloads.filter.model.rmvt": "RM-VT",
         "downloads.filter.model.inspection": "Inspection Quad",
         "downloads.filter.model.agri": "Agri Sprayer",
-        "downloads.filter.model.antiStation": "Anti-drone Station",
         "downloads.filter.model.linkKit": "HD Link Kit",
-        "downloads.filter.model.gcs": "Ground Control Station"
+        "downloads.filter.model.gcs": "Ground Control Station",
+        "downloads.accessories.f722.title": "F722 FC + F80 ESC | High-Performance FC + ESC Kit",
+        "downloads.accessories.f722.desc": "F722 FC paired with F80 ESC 4-in-1 for higher refresh and ample power headroom."
       }
     };
 
